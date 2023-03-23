@@ -233,7 +233,7 @@ void loop(){
     displayOLED();
    
   }else{
-    //CHANGE
+    //TO CHANGE
     sdFile = SD.open(fileName, FILE_WRITE);
 
     if(sdFile){
