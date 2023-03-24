@@ -195,20 +195,16 @@ void logInSD(){
       logLine += String(GPS.latitudeDegrees, 4);
       logLine += ",";
       logLine += String(GPS.longitudeDegrees, 4);
+      logLine += ",";
+      logLine += String(GPS.latitude, 4);
+      logLine += String(GPS.lat);
+      logLine += ",";
+      logLine += String(GPS.longitude, 4);
+      logLine += String(GPS.lon);
+
 
       sdFile.println(logLine);
-
-      /*
-      sdFile.print(timeLineConstruction());
-      sdFile.print(",");
-      sdFile.print(GPS.satellites);
-      sdFile.print(",");
-      sdFile.print(GPS.speed);
-      sdFile.print(",");
-      sdFile.print(GPS.latitudeDegrees, 4);
-      sdFile.print(",");
-      sdFile.println(GPS.longitudeDegrees,4);*/
-
+      sdFile.println(GPS.lastNMEA());
       sdFile.close();
 
       Serial.print("Saved on SD: ");
@@ -237,8 +233,6 @@ void loop(){
     displayOLED();
    
   }else{
-    //TO CHANGE
-    //TEST
     sdFile = SD.open(fileName, FILE_WRITE);
 
     if(sdFile){
