@@ -59,6 +59,10 @@ void displayOLED(){
   oled.clearDisplay();
   oled.setCursor(0, 1);
   oled.print(String(GPS.latitudeDegrees, 4));
+  oled.setCursor(0, 2);
+  oled.print(String(GPS.longitudeDegrees, 4));
+  oled.setCursor(0, 3);
+  oled.print(String(GPS.satellites));
   
 }
 
@@ -121,10 +125,10 @@ void readGPS(){
   GPS.parse(GPS.lastNMEA()); //Parse that last good NMEA sentence
   String NMEA2 = GPS.lastNMEA();
   
-  /*
+  
   Serial.println(NMEA1);
   Serial.println(NMEA2);
-  */
+  
 
 }
 
