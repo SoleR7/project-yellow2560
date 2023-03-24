@@ -234,6 +234,7 @@ void loop(){
    
   }else{
     //TO CHANGE
+    //TEST
     sdFile = SD.open(fileName, FILE_WRITE);
 
     if(sdFile){
