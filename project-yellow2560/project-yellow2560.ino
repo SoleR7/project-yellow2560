@@ -1,7 +1,5 @@
 #include <U8g2lib.h>      //OLED
 #include <Wire.h>         //I2C (SDA-SCL for OLED)
-#include <U8g2lib.h>      //OLED
-#include <Wire.h>         //I2C (SDA-SCL for OLED)
 #include <Adafruit_GPS.h> //GPS
 #include <SPI.h>          // SPI (MISO/MOSI for SD Card reader)
 #include <SD.h>           //SD Card reader
@@ -21,11 +19,6 @@ Adafruit_GPS GPS(&GPSSerial);
 
 //GPS readings storage
 char c;
-
-//GPS current info to display
-String currentLatDeg;
-String currentLonDeg;
-String currentSat;
 
 //GPS current info to display
 String currentLatDeg;
@@ -208,9 +201,6 @@ void setupOLED(){
   
   //Flip 180º
   oled.setFlipMode(1);
-  
-  //Flip 180º
-  oled.setFlipMode(1);
 
   //Font
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
@@ -221,92 +211,11 @@ void setupOLED(){
 
   menu_level++;
   displayMainMenu();
-  displayMainMenu();
-
-  delay(SPLASH_SCREEN_TIME);
-
-  menu_level++;
-  displayMainMenu();
   
-  //variable ok
   //variable ok
   Serial.println("OLED OK");
 }
 
-
-void displayMainMenu(){
-  oled.clear();
-  Serial.println(menu_level);
-
-  switch (menu_level){
-    //Splash Screen
-    case 0:
-      oled.drawString(0, 3, "UPV ECO-MARATHON");
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(0, 4, "Telemetry system");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      break;
-
-    //Page1
-    // >> System Status
-    case 1:
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(3, 1, " MAIN MENU");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "\xbb System Status");
-      oled.drawString(0, 5, "Setup Circuit");
-      oled.drawString(0, 7, "Run");
-      break;
-
-    // >> Setup Circuit
-    case 2:
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(3, 1, " MAIN MENU");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "System Status");
-      oled.drawString(0, 5, "\xbb Setup Circuit");
-      oled.drawString(0, 7, "Run");
-      break;
-    
-    // >> Run
-    case 3:
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(3, 1, " MAIN MENU");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "System Status");
-      oled.drawString(0, 5, "Setup Circuit");
-      oled.drawString(0, 7, "\xbb Run");
-      break;
-    
-    //Page2
-    // >> GSP Info
-    case 4:
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(3, 1, " MAIN MENU");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "\xbb GPS Info");
-      oled.drawString(0, 5, "GSM Info");
-      break;
-
-    //Page2
-    // >> GSM Info
-    case 5:
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(3, 1, " MAIN MENU");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "GPS Info");
-      oled.drawString(0, 5, "\xbb GSM Info");
-      break;
-
-  }
-
-}
-
-
-void displaySubMenuSystemStatus(){
-  oled.setFont(u8x8_font_5x7_f);
-  oled.drawString(2, 1, "System Status");
-  oled.setFont(u8x8_font_amstrad_cpc_extended_f);
 
 void displayMainMenu(){
   oled.clear();
@@ -419,14 +328,6 @@ void updateGPSinfo(){
 }
 
 
-
-void updateGPSinfo(){
-  currentLatDeg = String(GPS.latitudeDegrees, 4);
-  currentLonDeg = String(GPS.longitudeDegrees, 4);
-  currentSat = String(GPS.satellites);
-}
-
-
 //--------------GPS---------------
 void setupGPS(){
   
@@ -471,7 +372,7 @@ void clearGPS(){
 
 void readGPS(){
 
-  //clearGPS();
+  clearGPS();
 
   while(!GPS.newNMEAreceived()){
     c=GPS.read();
@@ -485,12 +386,10 @@ void readGPS(){
   }
 
   GPS.parse(GPS.lastNMEA());
-  GPS.parse(GPS.lastNMEA());
   String NMEA2 = GPS.lastNMEA();
   
   Serial.println(NMEA1);
   Serial.println(NMEA2);
-
 
 }
 
@@ -510,7 +409,6 @@ void setupSD(){
     Serial.println(fileName + " removed");
   }
 
-  ssSD = "SD OK";
   ssSD = "SD OK";
   Serial.println("SD OK");
 
@@ -551,8 +449,6 @@ void logInSD(){
     if(sdFile){
       //time,satellites,speed,lat,lon,lat(norm),lon(norm)
       //change decimals to 8?
-      //time,satellites,speed,lat,lon,lat(norm),lon(norm)
-      //change decimals to 8?
       logLine += timeLineConstruction();
       logLine += ",";
       logLine += String(GPS.satellites);
@@ -560,16 +456,12 @@ void logInSD(){
       logLine += String(GPS.speed);
       logLine += ",";
       logLine += String(GPS.latitudeDegrees, 8);
-      logLine += String(GPS.latitudeDegrees, 8);
       logLine += ",";
       logLine += String(GPS.longitudeDegrees, 8);
-      logLine += String(GPS.longitudeDegrees, 8);
       logLine += ",";
-      logLine += String(GPS.latitude, 8);
       logLine += String(GPS.latitude, 8);
       logLine += String(GPS.lat);
       logLine += ",";
-      logLine += String(GPS.longitude, 8);
       logLine += String(GPS.longitude, 8);
       logLine += String(GPS.lon);
 
@@ -581,7 +473,6 @@ void logInSD(){
       Serial.print("Saved on SD: ");
       Serial.println(logLine);
 
-      //delay(100);
       //delay(100);
       
     }else{
@@ -612,9 +503,8 @@ void loop(){
 
   
   readGPS();
-/*
+
   if(GPS.fix==1){
-    updateGPSinfo();
     updateGPSinfo();
     logInSD();
    
@@ -628,7 +518,7 @@ void loop(){
       Serial.println("Error openning " + fileName);
     }
     
-  }*/
+  }
 
 }
 
@@ -643,8 +533,8 @@ void moveButton_isr() {
   if (timeGap > debounceTime) {
     moveButton_pressed = true;
     Serial.println("0");
-    
   }
+
   lastPush = nowPush;
 }
 
@@ -658,6 +548,7 @@ void selectButton_isr() {
     selectButton_pressed = true;
     Serial.println("1");   
   }
+
   lastPush = nowPush;
 }
 
@@ -671,7 +562,6 @@ void backButton_isr() {
   backButton_pressed = true;
   Serial.println("2");  
   }
+  
   lastPush = nowPush;
 }
-
-
