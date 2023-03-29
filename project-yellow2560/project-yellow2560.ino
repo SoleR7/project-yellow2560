@@ -10,7 +10,6 @@
 //Chip Select pin for SD card reader
 #define SD_CS 53
 
-
 //Miliseconds displaying the splash screen
 #define SPLASH_SCREEN_TIME 5000
 
@@ -39,14 +38,15 @@ int menu_level = 0;
 bool subMenu = false;
 //oled.drawString(0, 1, "\x8d \xbb \xab"); //->  >> <<
 //oled.setInverseFont(1);   ON--OFF  oled.setInverseFont(0);
+bool activateGPS = false;
 
 //System Status Strings
-String ssSD = "";
-String ssGPS = "";
+String ssSD = "SD ?";
+String ssGPS = "GPS ?";
 String ssGSM = "GSM ?";
 
 
-//BUTTON
+//BUTTONS
 #define BUTTON_MOVE_PIN 19
 #define BUTTON_SELECT_PIN 2
 #define BUTTON_BACK_PIN 3
@@ -87,10 +87,9 @@ void setup(){
 
 
 // Movement through the menu
-void actionButton_singleClick(){
+void menuGUI_move(){
   
   if(!subMenu){
-    Serial.println("Single Click!");
     menu_level++;
 
     if(menu_level == 6){
@@ -99,16 +98,15 @@ void actionButton_singleClick(){
 
     displayMainMenu();
   }else{
-    Serial.println("Single click -> submenu");
+    //
   }
 
 }
 
 
 // Menu selection -> SubMenu
-void actionButton_doubleClick(){
+void menuGUI_select(){
   
-  Serial.println("Double click!");
 
   if(!subMenu){
     oled.clear();
@@ -128,25 +126,13 @@ void actionButton_doubleClick(){
     //>> Setup Circuit
     case 2:
       Serial.println("Setup Circuit");
-
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(4, 1, "GPS Info");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "1");
-      oled.drawString(0, 5, "2");
-      oled.drawString(0, 7, "3");     
+      displaySubMenuSetupCircuit();    
       break;
 
     //>> Run
     case 3:
       Serial.println("Run");
-
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(4, 1, "Run");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "1");
-      oled.drawString(0, 5, "2");
-      oled.drawString(0, 7, "3");
+      displaySubMenuRun();
       break;
 
     //>> GPS Info
@@ -158,18 +144,12 @@ void actionButton_doubleClick(){
     //>> GSM Info
     case 5:
       Serial.println("GSM Info");
-
-      oled.setFont(u8x8_font_5x7_f);
-      oled.drawString(4, 1, "GSM Info");
-      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-      oled.drawString(0, 3, "1");
-      oled.drawString(0, 5, "2");
-      oled.drawString(0, 7, "3");
+      displaySubMenuGSMinfo();
       break; 
     }
 
   }else{
-    Serial.println("Double Click -> Submenu");
+    //
   }
 
   subMenu = true;
@@ -178,10 +158,9 @@ void actionButton_doubleClick(){
 
 
 // Go back to MainMenu
-void actionButton_longClick(){
+void menuGUI_back(){
   
   if(subMenu){
-    Serial.println("Long click! -> Submenu");
     menu_level = 1;
     subMenu = false;
     displayMainMenu();
@@ -219,6 +198,7 @@ void setupOLED(){
 
 void displayMainMenu(){
   oled.clear();
+  Serial.println("Menu_level: ");
   Serial.println(menu_level);
 
   switch (menu_level){
@@ -287,6 +267,7 @@ void displayMainMenu(){
 
 
 void displaySubMenuSystemStatus(){
+  oled.clear();
   oled.setFont(u8x8_font_5x7_f);
   oled.drawString(2, 1, "System Status");
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
@@ -299,8 +280,30 @@ void displaySubMenuSystemStatus(){
   oled.print(ssGSM);
 }
 
+void displaySubMenuSetupCircuit(){
+  oled.clear();
+  oled.setFont(u8x8_font_5x7_f);
+  oled.drawString(2, 1, "Setup Circuit");
+  oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+  oled.drawString(0, 3, "1");
+  oled.drawString(0, 5, "2");
+  oled.drawString(0, 7, "3");   
+}
+
+void displaySubMenuRun(){
+  oled.clear();
+  oled.setFont(u8x8_font_5x7_f);
+  oled.drawString(6, 1, "Run");
+  oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+  oled.drawString(0, 3, "1");
+  oled.drawString(0, 5, "2");
+  oled.drawString(0, 7, "3");
+}
+
 
 void displaySubMenuGPSinfo(){
+
+  oled.clear();
   oled.setFont(u8x8_font_5x7_f);
   oled.drawString(4, 1, "GPS Info");
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
@@ -314,9 +317,20 @@ void displaySubMenuGPSinfo(){
     oled.print(currentSat);
 
   }else{
-    oled.drawString(0, 3, "No fix!");
+    oled.drawString(0, 5, "No fix");
   }
 
+}
+
+
+void displaySubMenuGSMinfo(){
+  oled.clear();
+  oled.setFont(u8x8_font_5x7_f);
+  oled.drawString(4, 1, "GSM Info");
+  oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+  oled.drawString(0, 3, "1");
+  oled.drawString(0, 5, "2");
+  oled.drawString(0, 7, "3");
 }
 
 
@@ -490,25 +504,48 @@ void loop(){
 
   if(moveButton_pressed){
     moveButton_pressed = false;
-    actionButton_singleClick(); 
+    menuGUI_move(); 
   }
 
   if (selectButton_pressed) {
     selectButton_pressed = false;
+    menuGUI_select();
+
+    //Check if GPS is required for the submenu selected
+    if(subMenu && (menu_level==2 || menu_level==3 || menu_level==4)){
+      Serial.println("GPS ACTIVATED");
+      activateGPS = true;
+     
+    }
+
   }
   
   if (backButton_pressed) {
-    backButton_pressed = false; 
+    backButton_pressed = false;
+    menuGUI_back();
+    if(!subMenu){
+      Serial.println("GPS DEACTIVATED");              
+      activateGPS = false;    
+    }
   }
 
-  
+  if(activateGPS){
+    parseGPS();
+  }
+
+
+}
+
+void parseGPS(){
   readGPS();
 
   if(GPS.fix==1){
     updateGPSinfo();
+    displaySubMenuGPSinfo();
     logInSD();
    
   }else{
+    //si no encuentra fix que no haga nada
     sdFile = SD.open(fileName, FILE_WRITE);
     if(sdFile){
       sdFile.println(GPS.lastNMEA());
@@ -519,10 +556,7 @@ void loop(){
     }
     
   }
-
 }
-
-
 
 
 void moveButton_isr() {
@@ -532,9 +566,7 @@ void moveButton_isr() {
   
   if (timeGap > debounceTime) {
     moveButton_pressed = true;
-    Serial.println("0");
   }
-
   lastPush = nowPush;
 }
 
@@ -545,10 +577,8 @@ void selectButton_isr() {
   timeGap = nowPush - lastPush;
   
   if (timeGap > debounceTime) {
-    selectButton_pressed = true;
-    Serial.println("1");   
+    selectButton_pressed = true;  
   }
-
   lastPush = nowPush;
 }
 
@@ -559,9 +589,7 @@ void backButton_isr() {
   timeGap = nowPush - lastPush;
   
   if (timeGap > debounceTime) {
-  backButton_pressed = true;
-  Serial.println("2");  
+  backButton_pressed = true; 
   }
-  
   lastPush = nowPush;
 }
