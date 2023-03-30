@@ -336,9 +336,9 @@ void displaySubMenuGSMinfo(){
 
 
 void updateGPSinfo(){
-  currentLatDeg = String(GPS.latitudeDegrees, 4);
-  currentLonDeg = String(GPS.longitudeDegrees, 4);
-  currentSat = String(GPS.satellites);
+  currentLatDeg = String(GPS.latitudeDegrees, 5);
+  currentLonDeg = String(GPS.longitudeDegrees, 5);
+  currentSat = "Sat:" + String(GPS.satellites);
 }
 
 
@@ -462,21 +462,20 @@ void logInSD(){
 
     if(sdFile){
       //time,satellites,speed,lat,lon,lat(norm),lon(norm)
-      //change decimals to 8?
       logLine += timeLineConstruction();
       logLine += ",";
       logLine += String(GPS.satellites);
       logLine += ",";
       logLine += String(GPS.speed);
       logLine += ",";
-      logLine += String(GPS.latitudeDegrees, 8);
+      logLine += String(GPS.latitudeDegrees, 5);
       logLine += ",";
-      logLine += String(GPS.longitudeDegrees, 8);
+      logLine += String(GPS.longitudeDegrees, 5);
       logLine += ",";
-      logLine += String(GPS.latitude, 8);
+      logLine += String(GPS.latitude, 5);
       logLine += String(GPS.lat);
       logLine += ",";
-      logLine += String(GPS.longitude, 8);
+      logLine += String(GPS.longitude, 5);
       logLine += String(GPS.lon);
 
 
