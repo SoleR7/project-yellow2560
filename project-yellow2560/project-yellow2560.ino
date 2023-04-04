@@ -2,13 +2,14 @@
 #include <Wire.h>         //I2C (SDA-SCL for OLED)
 #include <Adafruit_GPS.h> //GPS
 #include <SPI.h>          // SPI (MISO/MOSI for SD Card reader)
-#include <SD.h>           //SD Card reader
+
+#include "mySD.h"
 
 //Serial port for GPS (TX3(14), RX3(15))
 #define GPSSerial Serial3
 
 //Chip Select pin for SD card reader
-#define SD_CS 53
+//#define SD_CS 53
 
 //Miliseconds displaying the splash screen
 #define SPLASH_SCREEN_TIME 5000
@@ -28,8 +29,7 @@ String currentSat;
 U8X8_SH1106_128X64_NONAME_HW_I2C oled(U8X8_PIN_NONE);
 
 //SD card reader
-String fileName = "data.csv";
-File sdFile;
+//String fileName = "data.csv";
 
 //MENU
 int menu_level = 0;
@@ -40,10 +40,10 @@ bool subMenu = false;
 //oled.setInverseFont(1);   ON--OFF  oled.setInverseFont(0);
 bool activateGPS = false;
 
-//System Status Strings
-String ssSD = "SD ?";
-String ssGPS = "GPS ?";
-String ssGSM = "GSM ?";
+//GLOBAL System Status String variables
+//extern String ssSD = "SD ?";
+extern String ssGPS = "GPS ?";
+extern String ssGSM = "GSM ?";
 
 
 //BUTTONS
@@ -410,6 +410,7 @@ void readGPS(){
 
 
 //--------------SD CARD READER---------------
+/*
 void setupSD(){
   pinMode(SD_CS, OUTPUT);
   
@@ -425,18 +426,18 @@ void setupSD(){
 
   ssSD = "SD OK";
   Serial.println("SD OK");
-
 }
+*/
 
 
 String timeLineConstruction(){
   //HH:MM:SS
   String timeLine = "";
 
-  if (GPS.hour < 10) { 
+  if (GPS.hour < 10 + 2) { 
     timeLine += "0"; 
   }
-  timeLine += String(GPS.hour, DEC);
+  timeLine += String(GPS.hour + 2, DEC);
   
   timeLine += ":";
 
@@ -455,7 +456,7 @@ String timeLineConstruction(){
   return timeLine;
 }
 
-
+/*
 void logInSD(){
     String logLine = "";
     sdFile = SD.open(fileName, FILE_WRITE);
@@ -491,7 +492,30 @@ void logInSD(){
     }else{
       Serial.println("Error openning " + fileName);
     }
+}
+*/
 
+String logDataLineConstruction(){
+  String logLine = "";
+
+  //time,satellites,speed,lat,lon,lat(norm),lon(norm)
+  logLine += timeLineConstruction();
+  logLine += ",";
+  logLine += String(GPS.satellites);
+  logLine += ",";
+  logLine += String(GPS.speed);
+  logLine += ",";
+  logLine += String(GPS.latitudeDegrees, 5);
+  logLine += ",";
+  logLine += String(GPS.longitudeDegrees, 5);
+  logLine += ",";
+  logLine += String(GPS.latitude, 5);
+  logLine += String(GPS.lat);
+  logLine += ",";
+  logLine += String(GPS.longitude, 5);
+  logLine += String(GPS.lon);
+
+  return logLine;
 }
 
 
@@ -541,10 +565,13 @@ void parseGPS(){
   if(GPS.fix==1){
     updateGPSinfo();
     displaySubMenuGPSinfo();
-    logInSD();
+    String logDataLine = logDataLineConstruction();
+    
+    logInSD(logDataLine);
    
   }else{
     //si no encuentra fix que no haga nada
+    /*
     sdFile = SD.open(fileName, FILE_WRITE);
     if(sdFile){
       sdFile.println(GPS.lastNMEA());
@@ -553,6 +580,7 @@ void parseGPS(){
     }else{
       Serial.println("Error openning " + fileName);
     }
+    */
     
   }
 }
