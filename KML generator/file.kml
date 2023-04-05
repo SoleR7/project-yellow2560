@@ -1,0 +1,1485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+    <Document id="1">
+        <Folder id="4">
+            <Style id="2">
+                <LineStyle id="3">
+                    <color>ff0000ff</color>
+                    <colorMode>normal</colorMode>
+                    <width>5</width>
+                </LineStyle>
+            </Style>
+            <name>My Placemarks</name>
+            <Placemark id="6">
+                <name>19:17:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="5">
+                    <coordinates>-0.47839,38.70386,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="8">
+                <name>19:17:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="7">
+                    <coordinates>-0.47842,38.70386,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="10">
+                <name>19:17:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="9">
+                    <coordinates>-0.47828,38.70387,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="12">
+                <name>19:17:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="11">
+                    <coordinates>-0.47843,38.70390,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="14">
+                <name>19:18:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="13">
+                    <coordinates>-0.47829,38.70388,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="16">
+                <name>19:18:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="15">
+                    <coordinates>-0.47831,38.70401,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="18">
+                <name>19:18:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="17">
+                    <coordinates>-0.47827,38.70398,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="20">
+                <name>19:18:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="19">
+                    <coordinates>-0.47834,38.70399,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="22">
+                <name>19:18:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="21">
+                    <coordinates>-0.47840,38.70401,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="24">
+                <name>19:18:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="23">
+                    <coordinates>-0.47845,38.70403,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="26">
+                <name>19:18:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="25">
+                    <coordinates>-0.47846,38.70407,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="28">
+                <name>19:18:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="27">
+                    <coordinates>-0.47845,38.70411,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="30">
+                <name>19:18:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="29">
+                    <coordinates>-0.47847,38.70412,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="32">
+                <name>19:18:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="31">
+                    <coordinates>-0.47851,38.70413,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="34">
+                <name>19:18:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="33">
+                    <coordinates>-0.47854,38.70420,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="36">
+                <name>19:18:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="35">
+                    <coordinates>-0.47855,38.70425,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="38">
+                <name>19:18:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="37">
+                    <coordinates>-0.47856,38.70428,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="40">
+                <name>19:18:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="39">
+                    <coordinates>-0.47859,38.70430,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="42">
+                <name>19:18:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="41">
+                    <coordinates>-0.47864,38.70430,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="44">
+                <name>19:18:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="43">
+                    <coordinates>-0.47868,38.70428,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="46">
+                <name>19:18:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="45">
+                    <coordinates>-0.47873,38.70426,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="48">
+                <name>19:18:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="47">
+                    <coordinates>-0.47877,38.70423,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="50">
+                <name>19:18:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="49">
+                    <coordinates>-0.47882,38.70420,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="52">
+                <name>19:18:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="51">
+                    <coordinates>-0.47886,38.70417,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="54">
+                <name>19:19:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="53">
+                    <coordinates>-0.47901,38.70413,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="56">
+                <name>19:19:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="55">
+                    <coordinates>-0.47908,38.70410,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="58">
+                <name>19:19:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="57">
+                    <coordinates>-0.47913,38.70408,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="60">
+                <name>19:19:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="59">
+                    <coordinates>-0.47918,38.70405,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="62">
+                <name>19:19:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="61">
+                    <coordinates>-0.47923,38.70403,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="64">
+                <name>19:19:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="63">
+                    <coordinates>-0.47927,38.70401,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="66">
+                <name>19:19:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="65">
+                    <coordinates>-0.47930,38.70399,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="68">
+                <name>19:19:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="67">
+                    <coordinates>-0.47935,38.70398,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="70">
+                <name>19:19:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="69">
+                    <coordinates>-0.47939,38.70396,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="72">
+                <name>19:19:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="71">
+                    <coordinates>-0.47943,38.70394,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="74">
+                <name>19:19:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="73">
+                    <coordinates>-0.47948,38.70392,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="76">
+                <name>19:19:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="75">
+                    <coordinates>-0.47952,38.70390,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="78">
+                <name>19:19:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="77">
+                    <coordinates>-0.47956,38.70388,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="80">
+                <name>19:19:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="79">
+                    <coordinates>-0.47960,38.70387,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="82">
+                <name>19:19:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="81">
+                    <coordinates>-0.47964,38.70385,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="84">
+                <name>19:19:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="83">
+                    <coordinates>-0.47968,38.70383,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="86">
+                <name>19:19:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="85">
+                    <coordinates>-0.47972,38.70381,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="88">
+                <name>19:19:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="87">
+                    <coordinates>-0.47976,38.70379,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="90">
+                <name>19:19:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="89">
+                    <coordinates>-0.47980,38.70377,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="92">
+                <name>19:19:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="91">
+                    <coordinates>-0.47984,38.70374,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="94">
+                <name>19:20:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="93">
+                    <coordinates>-0.47988,38.70372,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="96">
+                <name>19:20:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="95">
+                    <coordinates>-0.47992,38.70370,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="98">
+                <name>19:20:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="97">
+                    <coordinates>-0.47996,38.70368,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="100">
+                <name>19:20:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="99">
+                    <coordinates>-0.48000,38.70366,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="102">
+                <name>19:20:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="101">
+                    <coordinates>-0.48004,38.70363,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="104">
+                <name>19:20:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="103">
+                    <coordinates>-0.48010,38.70362,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="106">
+                <name>19:20:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="105">
+                    <coordinates>-0.48014,38.70359,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="108">
+                <name>19:20:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="107">
+                    <coordinates>-0.48019,38.70358,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="110">
+                <name>19:20:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="109">
+                    <coordinates>-0.48023,38.70354,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="112">
+                <name>19:20:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="111">
+                    <coordinates>-0.48027,38.70353,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="114">
+                <name>19:20:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="113">
+                    <coordinates>-0.48031,38.70350,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="116">
+                <name>19:20:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="115">
+                    <coordinates>-0.48036,38.70350,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="118">
+                <name>19:20:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="117">
+                    <coordinates>-0.48040,38.70348,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="120">
+                <name>19:20:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="119">
+                    <coordinates>-0.48043,38.70345,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="122">
+                <name>19:20:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="121">
+                    <coordinates>-0.48047,38.70343,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="124">
+                <name>19:20:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="123">
+                    <coordinates>-0.48051,38.70342,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="126">
+                <name>19:20:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="125">
+                    <coordinates>-0.48055,38.70341,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="128">
+                <name>19:20:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="127">
+                    <coordinates>-0.48059,38.70338,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="130">
+                <name>19:20:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="129">
+                    <coordinates>-0.48064,38.70335,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="132">
+                <name>19:20:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="131">
+                    <coordinates>-0.48069,38.70331,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="134">
+                <name>19:21:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="133">
+                    <coordinates>-0.48075,38.70327,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="136">
+                <name>19:21:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="135">
+                    <coordinates>-0.48079,38.70324,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="138">
+                <name>19:21:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="137">
+                    <coordinates>-0.48083,38.70320,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="140">
+                <name>19:21:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="139">
+                    <coordinates>-0.48087,38.70318,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="142">
+                <name>19:21:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="141">
+                    <coordinates>-0.48091,38.70317,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="144">
+                <name>19:21:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="143">
+                    <coordinates>-0.48095,38.70314,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="146">
+                <name>19:21:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="145">
+                    <coordinates>-0.48099,38.70313,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="148">
+                <name>19:21:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="147">
+                    <coordinates>-0.48103,38.70309,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="150">
+                <name>19:21:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="149">
+                    <coordinates>-0.48107,38.70307,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="152">
+                <name>19:21:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="151">
+                    <coordinates>-0.48111,38.70306,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="154">
+                <name>19:21:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="153">
+                    <coordinates>-0.48115,38.70304,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="156">
+                <name>19:21:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="155">
+                    <coordinates>-0.48119,38.70301,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="158">
+                <name>19:21:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="157">
+                    <coordinates>-0.48124,38.70300,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="160">
+                <name>19:21:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="159">
+                    <coordinates>-0.48128,38.70298,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="162">
+                <name>19:21:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="161">
+                    <coordinates>-0.48132,38.70296,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="164">
+                <name>19:21:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="163">
+                    <coordinates>-0.48136,38.70294,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="166">
+                <name>19:21:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="165">
+                    <coordinates>-0.48139,38.70293,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="168">
+                <name>19:21:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="167">
+                    <coordinates>-0.48143,38.70291,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="170">
+                <name>19:21:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="169">
+                    <coordinates>-0.48147,38.70292,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="172">
+                <name>19:21:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="171">
+                    <coordinates>-0.48151,38.70289,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="174">
+                <name>19:22:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="173">
+                    <coordinates>-0.48155,38.70286,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="176">
+                <name>19:22:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="175">
+                    <coordinates>-0.48159,38.70284,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="178">
+                <name>19:22:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="177">
+                    <coordinates>-0.48164,38.70282,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="180">
+                <name>19:22:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="179">
+                    <coordinates>-0.48168,38.70279,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="182">
+                <name>19:22:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="181">
+                    <coordinates>-0.48172,38.70277,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="184">
+                <name>19:22:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="183">
+                    <coordinates>-0.48176,38.70275,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="186">
+                <name>19:22:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="185">
+                    <coordinates>-0.48180,38.70273,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="188">
+                <name>19:22:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="187">
+                    <coordinates>-0.48185,38.70270,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="190">
+                <name>19:22:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="189">
+                    <coordinates>-0.48190,38.70269,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="192">
+                <name>19:22:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="191">
+                    <coordinates>-0.48195,38.70268,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="194">
+                <name>19:22:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="193">
+                    <coordinates>-0.48200,38.70268,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="196">
+                <name>19:22:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="195">
+                    <coordinates>-0.48204,38.70267,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="198">
+                <name>19:22:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="197">
+                    <coordinates>-0.48209,38.70266,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="200">
+                <name>19:22:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="199">
+                    <coordinates>-0.48210,38.70263,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="202">
+                <name>19:22:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="201">
+                    <coordinates>-0.48208,38.70261,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="204">
+                <name>19:22:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="203">
+                    <coordinates>-0.48204,38.70258,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="206">
+                <name>19:22:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="205">
+                    <coordinates>-0.48202,38.70257,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="208">
+                <name>19:22:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="207">
+                    <coordinates>-0.48200,38.70256,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="210">
+                <name>19:22:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="209">
+                    <coordinates>-0.48197,38.70255,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="212">
+                <name>19:22:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="211">
+                    <coordinates>-0.48194,38.70253,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="214">
+                <name>19:23:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="213">
+                    <coordinates>-0.48190,38.70253,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="216">
+                <name>19:23:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="215">
+                    <coordinates>-0.48187,38.70251,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="218">
+                <name>19:23:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="217">
+                    <coordinates>-0.48184,38.70249,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="220">
+                <name>19:23:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="219">
+                    <coordinates>-0.48181,38.70246,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="222">
+                <name>19:23:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="221">
+                    <coordinates>-0.48178,38.70243,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="224">
+                <name>19:23:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="223">
+                    <coordinates>-0.48175,38.70242,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="226">
+                <name>19:23:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="225">
+                    <coordinates>-0.48172,38.70241,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="228">
+                <name>19:23:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="227">
+                    <coordinates>-0.48169,38.70238,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="230">
+                <name>19:23:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="229">
+                    <coordinates>-0.48167,38.70235,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="232">
+                <name>19:23:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="231">
+                    <coordinates>-0.48164,38.70233,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="234">
+                <name>19:23:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="233">
+                    <coordinates>-0.48162,38.70230,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="236">
+                <name>19:23:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="235">
+                    <coordinates>-0.48159,38.70228,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="238">
+                <name>19:23:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="237">
+                    <coordinates>-0.48157,38.70226,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="240">
+                <name>19:23:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="239">
+                    <coordinates>-0.48154,38.70225,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="242">
+                <name>19:23:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="241">
+                    <coordinates>-0.48151,38.70223,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="244">
+                <name>19:23:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="243">
+                    <coordinates>-0.48145,38.70218,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="246">
+                <name>19:23:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="245">
+                    <coordinates>-0.48139,38.70213,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="248">
+                <name>19:23:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="247">
+                    <coordinates>-0.48134,38.70206,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="250">
+                <name>19:23:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="249">
+                    <coordinates>-0.48131,38.70204,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="252">
+                <name>19:23:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="251">
+                    <coordinates>-0.48127,38.70201,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="254">
+                <name>19:24:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="253">
+                    <coordinates>-0.48123,38.70197,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="256">
+                <name>19:24:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="255">
+                    <coordinates>-0.48119,38.70193,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="258">
+                <name>19:24:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="257">
+                    <coordinates>-0.48115,38.70187,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="260">
+                <name>19:24:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="259">
+                    <coordinates>-0.48111,38.70183,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="262">
+                <name>19:24:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="261">
+                    <coordinates>-0.48108,38.70179,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="264">
+                <name>19:24:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="263">
+                    <coordinates>-0.48103,38.70175,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="266">
+                <name>19:24:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="265">
+                    <coordinates>-0.48097,38.70173,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="268">
+                <name>19:24:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="267">
+                    <coordinates>-0.48094,38.70171,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="270">
+                <name>19:24:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="269">
+                    <coordinates>-0.48091,38.70169,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="272">
+                <name>19:24:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="271">
+                    <coordinates>-0.48088,38.70169,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="274">
+                <name>19:24:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="273">
+                    <coordinates>-0.48083,38.70174,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="276">
+                <name>19:24:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="275">
+                    <coordinates>-0.48079,38.70179,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="278">
+                <name>19:24:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="277">
+                    <coordinates>-0.48075,38.70182,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="280">
+                <name>19:24:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="279">
+                    <coordinates>-0.48072,38.70186,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="282">
+                <name>19:24:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="281">
+                    <coordinates>-0.48068,38.70189,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="284">
+                <name>19:24:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="283">
+                    <coordinates>-0.48064,38.70192,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="286">
+                <name>19:24:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="285">
+                    <coordinates>-0.48059,38.70194,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="288">
+                <name>19:24:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="287">
+                    <coordinates>-0.48052,38.70195,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="290">
+                <name>19:24:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="289">
+                    <coordinates>-0.48047,38.70195,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="292">
+                <name>19:24:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="291">
+                    <coordinates>-0.48043,38.70198,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="294">
+                <name>19:25:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="293">
+                    <coordinates>-0.48041,38.70199,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="296">
+                <name>19:25:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="295">
+                    <coordinates>-0.48037,38.70201,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="298">
+                <name>19:25:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="297">
+                    <coordinates>-0.48034,38.70205,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="300">
+                <name>19:25:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="299">
+                    <coordinates>-0.48030,38.70209,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="302">
+                <name>19:25:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="301">
+                    <coordinates>-0.48025,38.70211,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="304">
+                <name>19:25:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="303">
+                    <coordinates>-0.48020,38.70214,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="306">
+                <name>19:25:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="305">
+                    <coordinates>-0.48017,38.70217,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="308">
+                <name>19:25:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="307">
+                    <coordinates>-0.48013,38.70220,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="310">
+                <name>19:25:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="309">
+                    <coordinates>-0.48009,38.70223,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="312">
+                <name>19:25:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="311">
+                    <coordinates>-0.48005,38.70226,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="314">
+                <name>19:25:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="313">
+                    <coordinates>-0.48003,38.70229,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="316">
+                <name>19:25:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="315">
+                    <coordinates>-0.48001,38.70231,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="318">
+                <name>19:25:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="317">
+                    <coordinates>-0.47997,38.70234,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="320">
+                <name>19:25:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="319">
+                    <coordinates>-0.47995,38.70237,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="322">
+                <name>19:25:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="321">
+                    <coordinates>-0.47990,38.70240,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="324">
+                <name>19:25:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="323">
+                    <coordinates>-0.47986,38.70243,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="326">
+                <name>19:25:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="325">
+                    <coordinates>-0.47982,38.70246,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="328">
+                <name>19:25:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="327">
+                    <coordinates>-0.47979,38.70248,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="330">
+                <name>19:25:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="329">
+                    <coordinates>-0.47977,38.70251,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="332">
+                <name>19:25:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="331">
+                    <coordinates>-0.47974,38.70255,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="334">
+                <name>19:26:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="333">
+                    <coordinates>-0.47970,38.70258,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="336">
+                <name>19:26:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="335">
+                    <coordinates>-0.47964,38.70261,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="338">
+                <name>19:26:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="337">
+                    <coordinates>-0.47959,38.70263,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="340">
+                <name>19:26:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="339">
+                    <coordinates>-0.47954,38.70265,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="342">
+                <name>19:26:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="341">
+                    <coordinates>-0.47951,38.70269,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="344">
+                <name>19:26:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="343">
+                    <coordinates>-0.47948,38.70273,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="346">
+                <name>19:26:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="345">
+                    <coordinates>-0.47945,38.70276,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="348">
+                <name>19:26:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="347">
+                    <coordinates>-0.47942,38.70279,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="350">
+                <name>19:26:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="349">
+                    <coordinates>-0.47939,38.70282,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="352">
+                <name>19:26:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="351">
+                    <coordinates>-0.47936,38.70285,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="354">
+                <name>19:26:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="353">
+                    <coordinates>-0.47933,38.70288,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="356">
+                <name>19:26:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="355">
+                    <coordinates>-0.47929,38.70290,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="358">
+                <name>19:26:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="357">
+                    <coordinates>-0.47926,38.70293,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="360">
+                <name>19:26:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="359">
+                    <coordinates>-0.47923,38.70297,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="362">
+                <name>19:26:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="361">
+                    <coordinates>-0.47919,38.70300,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="364">
+                <name>19:26:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="363">
+                    <coordinates>-0.47916,38.70303,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="366">
+                <name>19:26:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="365">
+                    <coordinates>-0.47912,38.70306,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="368">
+                <name>19:26:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="367">
+                    <coordinates>-0.47907,38.70308,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="370">
+                <name>19:26:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="369">
+                    <coordinates>-0.47903,38.70311,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="372">
+                <name>19:26:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="371">
+                    <coordinates>-0.47900,38.70314,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="374">
+                <name>19:27:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="373">
+                    <coordinates>-0.47897,38.70318,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="376">
+                <name>19:27:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="375">
+                    <coordinates>-0.47895,38.70320,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="378">
+                <name>19:27:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="377">
+                    <coordinates>-0.47892,38.70325,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="380">
+                <name>19:27:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="379">
+                    <coordinates>-0.47888,38.70328,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="382">
+                <name>19:27:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="381">
+                    <coordinates>-0.47885,38.70331,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="384">
+                <name>19:27:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="383">
+                    <coordinates>-0.47882,38.70334,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="386">
+                <name>19:27:20</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="385">
+                    <coordinates>-0.47879,38.70337,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="388">
+                <name>19:27:23</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="387">
+                    <coordinates>-0.47877,38.70340,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="390">
+                <name>19:27:26</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="389">
+                    <coordinates>-0.47873,38.70343,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="392">
+                <name>19:27:29</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="391">
+                    <coordinates>-0.47871,38.70346,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="394">
+                <name>19:27:32</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="393">
+                    <coordinates>-0.47868,38.70350,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="396">
+                <name>19:27:35</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="395">
+                    <coordinates>-0.47864,38.70353,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="398">
+                <name>19:27:38</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="397">
+                    <coordinates>-0.47861,38.70356,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="400">
+                <name>19:27:41</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="399">
+                    <coordinates>-0.47857,38.70359,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="402">
+                <name>19:27:44</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="401">
+                    <coordinates>-0.47854,38.70361,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="404">
+                <name>19:27:47</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="403">
+                    <coordinates>-0.47851,38.70364,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="406">
+                <name>19:27:50</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="405">
+                    <coordinates>-0.47848,38.70366,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="408">
+                <name>19:27:53</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="407">
+                    <coordinates>-0.47844,38.70368,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="410">
+                <name>19:27:56</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="409">
+                    <coordinates>-0.47841,38.70370,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="412">
+                <name>19:27:59</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="411">
+                    <coordinates>-0.47840,38.70374,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="414">
+                <name>19:28:02</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="413">
+                    <coordinates>-0.47841,38.70376,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="416">
+                <name>19:28:05</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="415">
+                    <coordinates>-0.47845,38.70378,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="418">
+                <name>19:28:08</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="417">
+                    <coordinates>-0.47848,38.70378,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="420">
+                <name>19:28:11</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="419">
+                    <coordinates>-0.47851,38.70379,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="422">
+                <name>19:28:14</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="421">
+                    <coordinates>-0.47852,38.70379,0.0</coordinates>
+                </Point>
+            </Placemark>
+            <Placemark id="424">
+                <name>19:28:17</name>
+                <styleUrl>#2</styleUrl>
+                <Point id="423">
+                    <coordinates>-0.47851,38.70379,0.0</coordinates>
+                </Point>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>
