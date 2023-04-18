@@ -8,9 +8,6 @@
 //Serial port for GPS (TX3(14), RX3(15))
 #define GPSSerial Serial3
 
-//Chip Select pin for SD card reader
-//#define SD_CS 53
-
 //Miliseconds displaying the splash screen
 #define SPLASH_SCREEN_TIME 5000
 
@@ -19,6 +16,8 @@ Adafruit_GPS GPS(&GPSSerial);
 
 //GPS readings storage
 char c;
+String lapGPSpoints[4];
+
 
 //GPS current info to display
 String currentLatDeg;
@@ -28,12 +27,9 @@ String currentSat;
 //OLED display object
 U8X8_SH1106_128X64_NONAME_HW_I2C oled(U8X8_PIN_NONE);
 
-//SD card reader
-//String fileName = "data.csv";
-
 //MENU
 int menu_level = 0;
-//int setupCircuit_subMenu_level = 0;
+int setupCircuit_subMenu_level = 0;
 //int run_subMenu_level = 0;
 bool subMenu = false;
 //oled.drawString(0, 1, "\x8d \xbb \xab"); //->  >> <<
@@ -41,7 +37,6 @@ bool subMenu = false;
 bool activateGPS = false;
 
 //GLOBAL System Status String variables
-//extern String ssSD = "SD ?";
 extern String ssGPS = "GPS ?";
 extern String ssGSM = "GSM ?";
 
@@ -67,7 +62,7 @@ volatile bool backButton_pressed = false;
 void setup(){
   Serial.begin(115200);
 
-// Set up the button pins as inputs
+  // Set up the button pins as inputs
   pinMode(BUTTON_MOVE_PIN, INPUT_PULLUP);
   pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
   pinMode(BUTTON_BACK_PIN, INPUT_PULLUP);
@@ -84,8 +79,6 @@ void setup(){
 
 
 
-
-
 // Movement through the menu
 void menuGUI_move(){
   
@@ -98,7 +91,16 @@ void menuGUI_move(){
 
     displayMainMenu();
   }else{
-    //
+    //Inside setup circuit
+    if(menu_level==2){
+      setupCircuit_subMenu_level++;
+    }
+
+    if(setupCircuit_subMenu_level == 3){
+      setupCircuit_subMenu_level = 0;
+    }
+
+    displaySubMenuSetupCircuit();
   }
 
 }
@@ -106,7 +108,6 @@ void menuGUI_move(){
 
 // Menu selection -> SubMenu
 void menuGUI_select(){
-  
 
   if(!subMenu){
     oled.clear();
@@ -149,7 +150,37 @@ void menuGUI_select(){
     }
 
   }else{
-    //
+
+    //Inside Setup Circuit
+    if(menu_level==2){
+      if(setupCircuit_subMenu_level == 0){
+        Serial.println("P1");
+        //Get P1 coordinates
+        lapGPSpoints[0] = currentLatDeg;
+        lapGPSpoints[1] = currentLonDeg;
+        Serial.print(currentLatDeg);
+        Serial.print("  ");
+        Serial.println(currentLonDeg);
+
+      }else if (setupCircuit_subMenu_level == 1){
+        Serial.println("P2");
+        //Get P2 coordinates
+        lapGPSpoints[2] = currentLatDeg;
+        lapGPSpoints[3] = currentLonDeg;
+        Serial.print(currentLatDeg);
+        Serial.print("  ");
+        Serial.println(currentLonDeg);
+
+      }else if (setupCircuit_subMenu_level == 2){
+        Serial.println("COMFIRM");
+        //create JSON
+        createLapLineJson(lapGPSpoints);
+      }
+
+      displaySubMenuSetupCircuit();
+    }
+
+    
   }
 
   subMenu = true;
@@ -162,6 +193,7 @@ void menuGUI_back(){
   
   if(subMenu){
     menu_level = 1;
+    setupCircuit_subMenu_level = 0;
     subMenu = false;
     displayMainMenu();
   }
@@ -260,7 +292,6 @@ void displayMainMenu(){
       oled.drawString(0, 3, "GPS Info");
       oled.drawString(0, 5, "\xbb GSM Info");
       break;
-
   }
 
 }
@@ -283,12 +314,40 @@ void displaySubMenuSystemStatus(){
 void displaySubMenuSetupCircuit(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
+  oled.setInverseFont(1);
   oled.drawString(2, 1, "Setup Circuit");
+  oled.setInverseFont(0);
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-  oled.drawString(0, 3, "1");
-  oled.drawString(0, 5, "2");
-  oled.drawString(0, 7, "3");   
+
+  lapGPSpoints[0] = "38.70387";
+  lapGPSpoints[1] = "-0.47837";
+
+  switch(setupCircuit_subMenu_level){
+    case 0:
+      oled.setCursor(0, 2);
+      oled.print("\xbb P1: "+lapGPSpoints[0]);
+      oled.setCursor(0, 3);
+      oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
+      //oled.drawString(0, 3, "\xbb P1: ");
+      oled.drawString(0, 5, "P2: ");
+      oled.drawString(0, 7, "Confirm"); 
+      break;
+    
+    case 1:
+      oled.drawString(0, 3, "P1: ");
+      oled.drawString(0, 5, "\xbb P2: ");
+      oled.drawString(0, 7, "Confirm");
+      break;
+
+    case 2:
+      oled.drawString(0, 3, "P1: ");
+      oled.drawString(0, 5, "P2: ");
+      oled.drawString(0, 7, "\xbb Confirm");
+      break;
+  }
+  
 }
+
 
 void displaySubMenuRun(){
   oled.clear();
@@ -410,26 +469,6 @@ void readGPS(){
 
 
 //--------------SD CARD READER---------------
-/*
-void setupSD(){
-  pinMode(SD_CS, OUTPUT);
-  
-  if(!SD.begin(SD_CS)){
-    Serial.println("Card failed");
-    while(1);
-  }
-
-  if(SD.exists(fileName)){
-    SD.remove(fileName);
-    Serial.println(fileName + " removed");
-  }
-
-  ssSD = "SD OK";
-  Serial.println("SD OK");
-}
-*/
-
-
 String timeLineConstruction(){
   //HH:MM:SS
   String timeLine = "";
@@ -456,44 +495,6 @@ String timeLineConstruction(){
   return timeLine;
 }
 
-/*
-void logInSD(){
-    String logLine = "";
-    sdFile = SD.open(fileName, FILE_WRITE);
-
-    if(sdFile){
-      //time,satellites,speed,lat,lon,lat(norm),lon(norm)
-      logLine += timeLineConstruction();
-      logLine += ",";
-      logLine += String(GPS.satellites);
-      logLine += ",";
-      logLine += String(GPS.speed);
-      logLine += ",";
-      logLine += String(GPS.latitudeDegrees, 5);
-      logLine += ",";
-      logLine += String(GPS.longitudeDegrees, 5);
-      logLine += ",";
-      logLine += String(GPS.latitude, 5);
-      logLine += String(GPS.lat);
-      logLine += ",";
-      logLine += String(GPS.longitude, 5);
-      logLine += String(GPS.lon);
-
-
-      sdFile.println(logLine);
-      sdFile.println(GPS.lastNMEA());
-      sdFile.close();
-
-      Serial.print("Saved on SD: ");
-      Serial.println(logLine);
-
-      //delay(100);
-      
-    }else{
-      Serial.println("Error openning " + fileName);
-    }
-}
-*/
 
 String logDataLineConstruction(){
   String logLine = "";
@@ -527,7 +528,7 @@ void loop(){
 
   if(moveButton_pressed){
     moveButton_pressed = false;
-    menuGUI_move(); 
+    menuGUI_move();
   }
 
   if (selectButton_pressed) {
@@ -538,7 +539,6 @@ void loop(){
     if(subMenu && (menu_level==2 || menu_level==3 || menu_level==4)){
       Serial.println("GPS ACTIVATED");
       activateGPS = true;
-     
     }
 
   }
@@ -564,25 +564,19 @@ void parseGPS(){
 
   if(GPS.fix==1){
     updateGPSinfo();
-    displaySubMenuGPSinfo();
-    String logDataLine = logDataLineConstruction();
     
-    logInSD(logDataLine);
-   
-  }else{
-    //si no encuentra fix que no haga nada
-    /*
-    sdFile = SD.open(fileName, FILE_WRITE);
-    if(sdFile){
-      sdFile.println(GPS.lastNMEA());
-      sdFile.close();
-      Serial.println("saved on SD!");
-    }else{
-      Serial.println("Error openning " + fileName);
+    //Inside GPS info
+    if(menu_level==4){
+      displaySubMenuGPSinfo();
     }
-    */
     
+    //String logDataLine = logDataLineConstruction();
+    //logInSD(logDataLine);
+
+  }else{
+    //NO FIX
   }
+
 }
 
 
@@ -620,3 +614,4 @@ void backButton_isr() {
   }
   lastPush = nowPush;
 }
+

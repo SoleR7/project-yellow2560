@@ -39,6 +39,14 @@ void logInSD(String logDataLine){
 
 }
 
+void createLapLineJson(String gpsPoints[]){
+  Serial.println("JSON!");
+  Serial.println(gpsPoints[0]);
+  Serial.println(gpsPoints[1]);
+  Serial.println(gpsPoints[2]);
+  Serial.println(gpsPoints[3]);
+}
+
 
 
 

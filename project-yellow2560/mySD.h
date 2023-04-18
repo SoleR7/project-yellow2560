@@ -8,6 +8,6 @@ extern String ssSD;
 
 void setupSD();
 void logInSD(String logDataLine);
-
+void createLapLineJson(String gpsPoints[]);
 
 #endif
