@@ -8,7 +8,7 @@
 String fileName = "data.csv";
 File sdFile;
 // lapline json
-String fileName_json = "LAPLINE.TXT";
+String fileName_json = "lapline.txt";
 File sdFile_json;
 
 //JSON
@@ -52,6 +52,12 @@ void logInSD(String logDataLine){
 
 void createLapLineJson(String gpsPoints[]){
 
+  //DELETES PREVIOUS JSON FILE
+  if(SD.exists(fileName_json)){
+    SD.remove(fileName_json);
+    Serial.println("Previous lapLine deleted!");
+  }
+
   // Create the JSON object
   StaticJsonDocument<128> jsonDoc;
   JsonArray lap_line = jsonDoc.createNestedArray(jsonHeader);
@@ -68,12 +74,6 @@ void createLapLineJson(String gpsPoints[]){
 
   // Open an SD file to save it
   sdFile_json = SD.open(fileName_json, FILE_WRITE);
-
-  //DELETES PREVIOUS JSON FILE
-  if(SD.exists(fileName_json)){
-    SD.remove(fileName_json);
-    Serial.println("Previous lapLine deleted!");
-  }
 
   // serialize the JSON object to the file
   serializeJson(jsonDoc, sdFile_json);
