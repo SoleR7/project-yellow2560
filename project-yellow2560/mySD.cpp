@@ -8,7 +8,7 @@
 String fileName = "data.csv";
 File sdFile;
 // lapline json
-String fileName_json = "lapline.txt";
+String fileName_json = "LAPLINE.TXT";
 File sdFile_json;
 
 //JSON
@@ -25,15 +25,15 @@ void setupSD(){
     while(1);
   }
 
-  if(SD.exists(fileName) || SD.exists(fileName_json)){
+  if(SD.exists(fileName)){
     SD.remove(fileName);
-    SD.remove(fileName_json);
     ssSD = "SD CLEANED";
   }
 
   ssSD = "SD OK";
   Serial.println(ssSD);
 }
+
 
 void logInSD(String logDataLine){
 
@@ -49,12 +49,8 @@ void logInSD(String logDataLine){
 
 }
 
+
 void createLapLineJson(String gpsPoints[]){
-  Serial.println("JSON!");
-  Serial.println(gpsPoints[0]);
-  Serial.println(gpsPoints[1]);
-  Serial.println(gpsPoints[2]);
-  Serial.println(gpsPoints[3]);
 
   // Create the JSON object
   StaticJsonDocument<128> jsonDoc;
@@ -73,43 +69,52 @@ void createLapLineJson(String gpsPoints[]){
   // Open an SD file to save it
   sdFile_json = SD.open(fileName_json, FILE_WRITE);
 
+  //DELETES PREVIOUS JSON FILE
+  if(SD.exists(fileName_json)){
+    SD.remove(fileName_json);
+    Serial.println("Previous lapLine deleted!");
+  }
+
   // serialize the JSON object to the file
   serializeJson(jsonDoc, sdFile_json);
   sdFile_json.close();
 
   Serial.println("json created");
 
-  getLapLineJsonPoints();
-
 }
 
 
 String* getLapLineJsonPoints(){
+
   static String lapGPSpoints[4];
 
-  // read the file and parse the JSON object
-  sdFile_json = SD.open(fileName_json);
-  StaticJsonDocument<128> jsonDoc;
-  DeserializationError error = deserializeJson(jsonDoc, sdFile_json);
-  sdFile_json.close();
+  if(SD.exists(fileName_json)){
+    // Read the file and parse the JSON object
+    sdFile_json = SD.open(fileName_json);
+    StaticJsonDocument<128> jsonDoc;
+    DeserializationError error = deserializeJson(jsonDoc, sdFile_json);
+    sdFile_json.close();
 
-  // check for parsing errors
-  if (error) {
-    Serial.println(error.f_str());
-    return;
+    // Check for parsing errors
+    if (error) {
+      Serial.println(error.f_str());
+      return;
+    }
+
+    // Extract the info from the serialized json
+    float lap_line_p1_lat = jsonDoc[jsonHeader][0]["p1"][0]; // p1 lat
+    float lap_line_p1_lon = jsonDoc[jsonHeader][0]["p1"][1]; // p1 lon
+    float lap_line_p2_lat = jsonDoc[jsonHeader][1]["p2"][0]; // p2 lat
+    float lap_line_p2_lon = jsonDoc[jsonHeader][1]["p2"][1]; // p2 lon
+
+    lapGPSpoints[0] = String(lap_line_p1_lat, 5);
+    lapGPSpoints[1] = String(lap_line_p1_lon, 5);
+    lapGPSpoints[2] = String(lap_line_p2_lat, 5);
+    lapGPSpoints[3] = String(lap_line_p2_lon, 5);
+    
+  }else{
+    lapGPSpoints[0] = "empty";
   }
-
-  float lap_line_p1_lat = jsonDoc[jsonHeader][0]["p1"][0]; // p1 lat
-  float lap_line_p1_lon = jsonDoc[jsonHeader][0]["p1"][1]; // p1 lon
-  float lap_line_p2_lat = jsonDoc[jsonHeader][1]["p2"][0]; // p2 lat
-  float lap_line_p2_lon = jsonDoc[jsonHeader][1]["p2"][1]; // p2 lon
-
-  Serial.println("->");
-
-  Serial.println(lap_line_p1_lat, 5);
-  Serial.println(lap_line_p1_lon, 5);
-  Serial.println(lap_line_p2_lat, 5);
-  Serial.println(lap_line_p2_lon, 5);
 
   return lapGPSpoints;
 }

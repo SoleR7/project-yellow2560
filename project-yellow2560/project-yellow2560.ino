@@ -9,7 +9,7 @@
 #define GPSSerial Serial3
 
 //Miliseconds displaying the splash screen
-#define SPLASH_SCREEN_TIME 5000
+#define SPLASH_SCREEN_TIME 2000
 
 //GPS object initiation with selected Serial port
 Adafruit_GPS GPS(&GPSSerial);
@@ -74,6 +74,19 @@ void setup(){
 
   setupGPS();
   setupSD();
+
+  String* strptr = getLapLineJsonPoints();
+  
+  if(strptr[0] != "empty"){
+    lapGPSpoints[0] = strptr[0];
+    lapGPSpoints[1] = strptr[1];
+    lapGPSpoints[2] = strptr[2];
+    lapGPSpoints[3] = strptr[3];
+    Serial.println("Previous lapLine found!");
+  }else{
+    Serial.println("No previous lapLine found!");    
+  }  
+  
   setupOLED();
 }
 
