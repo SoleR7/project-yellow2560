@@ -318,9 +318,13 @@ void displaySubMenuSetupCircuit(){
   oled.drawString(2, 1, "Setup Circuit");
   oled.setInverseFont(0);
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-
-  lapGPSpoints[0] = "38.70387";
-  lapGPSpoints[1] = "-0.47837";
+  
+  /*
+  lapGPSpoints[0] = "38.70380";
+  lapGPSpoints[1] = "-0.47831";
+  lapGPSpoints[2] = "38.70382";
+  lapGPSpoints[3] = "-0.47833";
+  */
 
   switch(setupCircuit_subMenu_level){
     case 0:
@@ -328,21 +332,41 @@ void displaySubMenuSetupCircuit(){
       oled.print("\xbb P1: "+lapGPSpoints[0]);
       oled.setCursor(0, 3);
       oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
-      //oled.drawString(0, 3, "\xbb P1: ");
-      oled.drawString(0, 5, "P2: ");
+
+      oled.setCursor(0, 4);
+      oled.print("P2: "+lapGPSpoints[2]);
+      oled.setCursor(0, 5);
+      oled.print("\t\t\t\t\t\t"+lapGPSpoints[3]);
+
       oled.drawString(0, 7, "Confirm"); 
       break;
     
     case 1:
-      oled.drawString(0, 3, "P1: ");
-      oled.drawString(0, 5, "\xbb P2: ");
-      oled.drawString(0, 7, "Confirm");
+      oled.setCursor(0, 2);
+      oled.print("P1: "+lapGPSpoints[0]);
+      oled.setCursor(0, 3);
+      oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
+
+      oled.setCursor(0, 4);
+      oled.print("\xbb P2: "+lapGPSpoints[2]);
+      oled.setCursor(0, 5);
+      oled.print("\t\t\t\t\t\t"+lapGPSpoints[3]);
+      
+      oled.drawString(0, 7, "Confirm"); 
       break;
 
     case 2:
-      oled.drawString(0, 3, "P1: ");
-      oled.drawString(0, 5, "P2: ");
-      oled.drawString(0, 7, "\xbb Confirm");
+      oled.setCursor(0, 2);
+      oled.print("P1: "+lapGPSpoints[0]);
+      oled.setCursor(0, 3);
+      oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
+
+      oled.setCursor(0, 4);
+      oled.print("P2: "+lapGPSpoints[2]);
+      oled.setCursor(0, 5);
+      oled.print("\t\t\t\t\t\t"+lapGPSpoints[3]);
+      
+      oled.drawString(0, 7, "\xbb Confirm"); 
       break;
   }
   
