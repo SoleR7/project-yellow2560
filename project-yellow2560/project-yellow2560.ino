@@ -30,11 +30,12 @@ U8X8_SH1106_128X64_NONAME_HW_I2C oled(U8X8_PIN_NONE);
 //MENU
 int menu_level = 0;
 int setupCircuit_subMenu_level = 0;
-//int run_subMenu_level = 0;
 bool subMenu = false;
+bool activateGPS = false;
+
 //oled.drawString(0, 1, "\x8d \xbb \xab"); //->  >> <<
 //oled.setInverseFont(1);   ON--OFF  oled.setInverseFont(0);
-bool activateGPS = false;
+
 
 //GLOBAL System Status String variables
 extern String ssGPS = "GPS ?";
@@ -43,6 +44,9 @@ extern String ssGSM = "GSM ?";
 
 //RUN
 bool isRunning = false;
+unsigned long runStartTime = 0;
+unsigned long runElapsedTime = 0;
+bool runStopWatchRunning = false;
 
 
 //BUTTONS
@@ -79,6 +83,7 @@ void setup(){
   setupGPS();
   setupSD();
 
+  //Check if there's an existing lapLine in the json file
   String* strptr = getLapLineJsonPoints();
   
   if(strptr[0] != "empty"){
@@ -121,13 +126,15 @@ void menuGUI_move(){
   }
   //Inside RUN
   else if(menu_level==3){
-    //Nothing
+    //Nothing, there's just one option to move to
   }
 
 }
 
 
 // Menu selection -> SubMenu
+//              or
+// SubMenu -> SubMenu Action
 void menuGUI_select(){
 
   if(!subMenu){
@@ -193,7 +200,7 @@ void menuGUI_select(){
         Serial.println(currentLonDeg);
 
       }else if (setupCircuit_subMenu_level == 2){
-        Serial.println("COMFIRM");
+        Serial.println("SAVE");
         //create JSON
         createLapLineJson(lapGPSpoints);
         lapLineRecorded = true;
@@ -213,7 +220,9 @@ void menuGUI_select(){
           isRunning = true;
         }else{
           //Stop run
-          //save everything?
+          stopRunStopwatch();
+          //save?
+
           isRunning = false;
           displaySubMenuRun();
         }
@@ -421,7 +430,7 @@ void displaySubMenuRun(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
   oled.setInverseFont(1);
-  oled.drawString(2, 1, "RUN");
+  oled.drawString(6, 1, "RUN");
   oled.setInverseFont(0);
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
 
@@ -430,16 +439,16 @@ void displaySubMenuRun(){
     
     oled.setCursor(0, 2);
     if(lapLineRecorded){
-      oled.print("LapLine: OK");
+      oled.print("LapLine: \tok");
     }else{
-      oled.print("LapLine: X");
+      oled.print("LapLine: \tX");
     }
     
     oled.setCursor(0, 4);
     oled.print("\xbb Start");
 
     oled.setCursor(0, 6);
-    oled.print("Time: 00:00:00");
+    oled.print("Time: " + getRunStopWatchTimeString());
     
     oled.setCursor(0, 7);
     oled.print("Laps: 0");
@@ -447,13 +456,13 @@ void displaySubMenuRun(){
   //Running
   else{
     oled.setCursor(0, 2);
-    oled.print("LapLine: OK");
+    oled.print("LapLine: ok");
 
     oled.setCursor(0, 4);
     oled.print("\xbb Stop");
 
     oled.setCursor(0, 6);
-    oled.print("Time: 00:00:01");
+    oled.print("Time: " + getRunStopWatchTimeString());
     
     oled.setCursor(0, 7);
     oled.print("Laps: 1");
@@ -662,13 +671,61 @@ void loop(){
   }
 
   if(isRunning){
+
     //crono
+    if(!runStopWatchRunning){
+      runStopWatchRunning = true;
+      
+      //reset
+      runElapsedTime = 0;
+      runStartTime = 0;
+      
+      runStartTime = millis();
+    }
+
+    if(runStopWatchRunning){
+      runElapsedTime = millis() - runStartTime;
+    }
+
+
     //laps
+    //...
+
     displaySubMenuRun();
   }
 
 
 }
+
+
+String getRunStopWatchTimeString(){
+  String runStopWatchTimeString = "";
+
+  int min = (runElapsedTime / 60000) % 60;
+  int sec = (runElapsedTime / 1000) % 60;
+
+  if (min < 10) {
+    runStopWatchTimeString += "0";
+  }
+
+    runStopWatchTimeString += min;
+    runStopWatchTimeString += ":";
+
+  if (sec < 10) {
+    runStopWatchTimeString += "0";
+  }
+
+  runStopWatchTimeString += sec;
+
+  return runStopWatchTimeString;
+}
+
+
+void stopRunStopwatch(){
+  runStopWatchRunning = false;
+  runElapsedTime = millis() - runStartTime;
+}
+
 
 void parseGPS(){
   readGPS();
