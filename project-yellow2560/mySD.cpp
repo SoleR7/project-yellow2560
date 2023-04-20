@@ -71,7 +71,6 @@ void createLapLineJson(String gpsPoints[]){
   lap_line_p2.add(gpsPoints[2]);
   lap_line_p2.add(gpsPoints[3]);
 
-
   // Open an SD file to save it
   sdFile_json = SD.open(fileName_json, FILE_WRITE);
 
@@ -80,7 +79,6 @@ void createLapLineJson(String gpsPoints[]){
   sdFile_json.close();
 
   Serial.println("json created");
-
 }
 
 

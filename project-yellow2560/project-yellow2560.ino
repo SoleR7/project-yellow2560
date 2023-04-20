@@ -17,7 +17,7 @@ Adafruit_GPS GPS(&GPSSerial);
 //GPS readings storage
 char c;
 String lapGPSpoints[4];
-
+bool lapLineRecorded = false;
 
 //GPS current info to display
 String currentLatDeg;
@@ -39,6 +39,10 @@ bool activateGPS = false;
 //GLOBAL System Status String variables
 extern String ssGPS = "GPS ?";
 extern String ssGSM = "GSM ?";
+
+
+//RUN
+bool isRunning = false;
 
 
 //BUTTONS
@@ -83,6 +87,7 @@ void setup(){
     lapGPSpoints[2] = strptr[2];
     lapGPSpoints[3] = strptr[3];
     Serial.println("Previous lapLine found!");
+    lapLineRecorded = true;
   }else{
     Serial.println("No previous lapLine found!");    
   }  
@@ -103,17 +108,20 @@ void menuGUI_move(){
     }
 
     displayMainMenu();
-  }else{
-    //Inside setup circuit
-    if(menu_level==2){
-      setupCircuit_subMenu_level++;
-    }
+  }
+  //Inside setup circuit
+  else if(menu_level==2){
+    setupCircuit_subMenu_level++;
 
     if(setupCircuit_subMenu_level == 3){
       setupCircuit_subMenu_level = 0;
     }
 
     displaySubMenuSetupCircuit();
+  }
+  //Inside RUN
+  else if(menu_level==3){
+    //Nothing
   }
 
 }
@@ -188,9 +196,31 @@ void menuGUI_select(){
         Serial.println("COMFIRM");
         //create JSON
         createLapLineJson(lapGPSpoints);
+        lapLineRecorded = true;
       }
 
       displaySubMenuSetupCircuit();
+    }
+
+    //Inside RUN
+    if(menu_level==3){
+      
+      //Check lapLine
+      if(lapLineRecorded){
+        if(!isRunning){
+          //Start run
+          //clean previous laps and times
+          isRunning = true;
+        }else{
+          //Stop run
+          //save everything?
+          isRunning = false;
+          displaySubMenuRun();
+        }
+      }else{
+        //No lapLine
+        Serial.println("NO LAPLINE!");
+      }
     }
 
     
@@ -204,7 +234,8 @@ void menuGUI_select(){
 // Go back to MainMenu
 void menuGUI_back(){
   
-  if(subMenu){
+  //Cant go back if the run is active
+  if(subMenu && !isRunning){
     menu_level = 1;
     setupCircuit_subMenu_level = 0;
     subMenu = false;
@@ -389,11 +420,48 @@ void displaySubMenuSetupCircuit(){
 void displaySubMenuRun(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
-  oled.drawString(6, 1, "Run");
+  oled.setInverseFont(1);
+  oled.drawString(2, 1, "RUN");
+  oled.setInverseFont(0);
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-  oled.drawString(0, 3, "1");
-  oled.drawString(0, 5, "2");
-  oled.drawString(0, 7, "3");
+
+  //No Running
+  if(!isRunning){
+    
+    oled.setCursor(0, 2);
+    if(lapLineRecorded){
+      oled.print("LapLine: OK");
+    }else{
+      oled.print("LapLine: X");
+    }
+    
+    oled.setCursor(0, 4);
+    oled.print("\xbb Start");
+
+    oled.setCursor(0, 6);
+    oled.print("Time: 00:00:00");
+    
+    oled.setCursor(0, 7);
+    oled.print("Laps: 0");
+  }
+  //Running
+  else{
+    oled.setCursor(0, 2);
+    oled.print("LapLine: OK");
+
+    oled.setCursor(0, 4);
+    oled.print("\xbb Stop");
+
+    oled.setCursor(0, 6);
+    oled.print("Time: 00:00:01");
+    
+    oled.setCursor(0, 7);
+    oled.print("Laps: 1");
+  }
+
+
+
+
 }
 
 
@@ -591,6 +659,12 @@ void loop(){
 
   if(activateGPS){
     parseGPS();
+  }
+
+  if(isRunning){
+    //crono
+    //laps
+    displaySubMenuRun();
   }
 
 
