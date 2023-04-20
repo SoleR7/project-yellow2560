@@ -11,8 +11,8 @@
 //Miliseconds displaying the splash screen
 #define SPLASH_SCREEN_TIME 2000
 
-//Threshold in meters for the lapLine
-#define DISTANCE_TO_LAPLINE_THRESHOLD 5
+//Threshold in GPS COORDINATES for the lapLine
+#define DISTANCE_TO_LAPLINE_THRESHOLD 0.00003
 
 //GPS object initiation with selected Serial port
 Adafruit_GPS GPS(&GPSSerial);
@@ -704,20 +704,23 @@ void loop(){
     Serial.println("------------------- LAPS");
     float currentLat = GPS.latitudeDegrees;
     Serial.print("currentLat: ");
-    Serial.println(currentLat);
+    Serial.println(currentLat, 5);
     float currentLon = GPS.longitudeDegrees;
     Serial.print("currentLon: ");
-    Serial.println(currentLon);
+    Serial.println(currentLon, 5);
     Serial.println("");
 
     //Check if the system has moved from one side of the finish line to the other
     
     float distance1 = distanceToLapLine(currentLat, currentLon, lapGPSpoints[0].toFloat(), lapGPSpoints[1].toFloat(), lapGPSpoints[2].toFloat(), lapGPSpoints[3].toFloat());
-    Serial.println("Distance1");
-    Serial.println(distance1);
+
     float distance2 = distanceToLapLine(prevLat, prevLon, lapGPSpoints[0].toFloat(), lapGPSpoints[1].toFloat(), lapGPSpoints[2].toFloat(), lapGPSpoints[3].toFloat());
+
+
+    Serial.println("Distance1");
+    Serial.println(distance1, 5);
     Serial.println("Distance2");
-    Serial.println(distance2);
+    Serial.println(distance2, 5);
 
 
     if(distance1 < DISTANCE_TO_LAPLINE_THRESHOLD && distance2 > DISTANCE_TO_LAPLINE_THRESHOLD){
@@ -771,26 +774,31 @@ void stopRun(){
 float distanceToLapLine(float latToCheck, float lonToCheck, float latP1, float lonP1, float latP2, float lonP2){
   float distance = 0.0;
 
+  Serial.println("LATP1");
+  Serial.println(latP1, 5);
+  Serial.println("LATP2");
+  Serial.println(latP2, 5);
+
   Serial.println("x1: ");
   float x1 = lonP1 - lonP2;
-  Serial.println(x1);
+  Serial.println(x1, 5);
   float y1 = latP2 - latP1;
   Serial.println("y1: ");
-  Serial.println(y1);
+  Serial.println(y1, 5);
 
   Serial.println("x2");
   float x2 = lonToCheck - lonP2;
-  Serial.println(x2);
+  Serial.println(x2, 5);
   float y2 = latToCheck - latP2;
   Serial.println("y2");
-  Serial.println(y2);
+  Serial.println(y2, 5);
 
   Serial.println("num");
   float num = abs(x1 * y2 - x2 * y1);
-  Serial.println(num);
+  Serial.println(num, 5);
   float den = sqrt(x1 * x1 + y1 * y1);
   Serial.println("den");
-  Serial.println(den);
+  Serial.println(den, 5);
 
 
   distance = num / den;
