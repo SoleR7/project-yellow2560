@@ -4,6 +4,7 @@
 #include <SPI.h>          // SPI (MISO/MOSI for SD Card reader)
 
 #include "mySD.h"
+#include "utility.h"
 
 //Serial port for GPS (TX3(14), RX3(15))
 #define GPSSerial Serial3
@@ -12,7 +13,7 @@
 #define SPLASH_SCREEN_TIME 2000
 
 //Threshold in GPS COORDINATES for the lapLine
-#define DISTANCE_TO_LAPLINE_THRESHOLD 0.00003
+#define DISTANCE_TO_LAPLINE_THRESHOLD 3
 
 //GPS object initiation with selected Serial port
 Adafruit_GPS GPS(&GPSSerial);
@@ -295,8 +296,6 @@ void setupOLED(){
 
 void displayMainMenu(){
   oled.clear();
-  Serial.println("Menu_level: ");
-  Serial.println(menu_level);
 
   switch (menu_level){
     //Splash Screen
@@ -710,17 +709,14 @@ void loop(){
     Serial.println(currentLon, 5);
     Serial.println("");
 
-    //Check if the system has moved from one side of the finish line to the other
-    
-    float distance1 = distanceToLapLine(currentLat, currentLon, lapGPSpoints[0].toFloat(), lapGPSpoints[1].toFloat(), lapGPSpoints[2].toFloat(), lapGPSpoints[3].toFloat());
+    //Check if the system has moved from one side of the lap line to the other
+    double distance1 = perpendicularDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), currentLat, currentLon);
+    double distance2 = perpendicularDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), prevLat, prevLon);
 
-    float distance2 = distanceToLapLine(prevLat, prevLon, lapGPSpoints[0].toFloat(), lapGPSpoints[1].toFloat(), lapGPSpoints[2].toFloat(), lapGPSpoints[3].toFloat());
-
-
-    Serial.println("Distance1");
-    Serial.println(distance1, 5);
-    Serial.println("Distance2");
-    Serial.println(distance2, 5);
+    Serial.print("Current distance fron lapLine: ");
+    Serial.println(distance1);
+    Serial.print("Previous distance from lapLine: ");
+    Serial.println(distance2);
 
 
     if(distance1 < DISTANCE_TO_LAPLINE_THRESHOLD && distance2 > DISTANCE_TO_LAPLINE_THRESHOLD){
@@ -733,7 +729,6 @@ void loop(){
 
     prevLat = currentLat;
     prevLon = currentLon;
-
 
     displaySubMenuRun();
   }
@@ -768,42 +763,6 @@ String getRunStopWatchTimeString(){
 void stopRun(){
   runStopWatchRunning = false;
   runElapsedTime = millis() - runStartTime;
-}
-
-
-float distanceToLapLine(float latToCheck, float lonToCheck, float latP1, float lonP1, float latP2, float lonP2){
-  float distance = 0.0;
-
-  Serial.println("LATP1");
-  Serial.println(latP1, 5);
-  Serial.println("LATP2");
-  Serial.println(latP2, 5);
-
-  Serial.println("x1: ");
-  float x1 = lonP1 - lonP2;
-  Serial.println(x1, 5);
-  float y1 = latP2 - latP1;
-  Serial.println("y1: ");
-  Serial.println(y1, 5);
-
-  Serial.println("x2");
-  float x2 = lonToCheck - lonP2;
-  Serial.println(x2, 5);
-  float y2 = latToCheck - latP2;
-  Serial.println("y2");
-  Serial.println(y2, 5);
-
-  Serial.println("num");
-  float num = abs(x1 * y2 - x2 * y1);
-  Serial.println(num, 5);
-  float den = sqrt(x1 * x1 + y1 * y1);
-  Serial.println("den");
-  Serial.println(den, 5);
-
-
-  distance = num / den;
-
-  return distance;
 }
 
 
