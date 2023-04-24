@@ -105,6 +105,7 @@ void setup(){
     Serial.println("No previous lapLine found!");    
   }  
   
+
   setupOLED();
 }
 
@@ -223,13 +224,14 @@ void menuGUI_select(){
       //Check lapLine
       if(lapLineRecorded){
         if(!isRunning){
-          //Start run
-          isRunning = true;
 
           //clean previous laps and times
           lapCount = 0;
           prevLat = 0.0;
           prevLon = 0.0;
+
+          //Start run
+          isRunning = true;
         
         }else{
           //Stop run
@@ -241,6 +243,7 @@ void menuGUI_select(){
         }
       }else{
         //No lapLine
+        // do nothing if there's no lapline set
         Serial.println("NO LAPLINE!");
       }
     }
@@ -256,7 +259,7 @@ void menuGUI_select(){
 // Go back to MainMenu
 void menuGUI_back(){
   
-  //Cant go back if the run is active
+  //Can't go back if the run is active
   if(subMenu && !isRunning){
     menu_level = 1;
     setupCircuit_subMenu_level = 0;
@@ -373,6 +376,7 @@ void displaySubMenuSystemStatus(){
   oled.print(ssGPS);
   oled.setCursor(0, 7);
   oled.print(ssGSM);
+  //TODO: add accelorometer and BMP280
 }
 
 void displaySubMenuSetupCircuit(){
@@ -382,13 +386,6 @@ void displaySubMenuSetupCircuit(){
   oled.drawString(2, 1, "Setup Circuit");
   oled.setInverseFont(0);
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-  
-  /*
-  lapGPSpoints[0] = "38.70380";
-  lapGPSpoints[1] = "-0.47831";
-  lapGPSpoints[2] = "38.70382";
-  lapGPSpoints[3] = "-0.47833";
-  */
 
   switch(setupCircuit_subMenu_level){
     case 0:
@@ -479,9 +476,6 @@ void displaySubMenuRun(){
     oled.print("Laps: " + String(lapCount));
   }
 
-
-
-
 }
 
 
@@ -516,7 +510,6 @@ void displaySubMenuGSMinfo(){
   oled.drawString(0, 5, "2");
   oled.drawString(0, 7, "3");
 }
-
 
 
 void updateGPSinfo(){
@@ -736,7 +729,7 @@ void loop(){
 
 }
 
-
+//Generates a String representing the current elapsed time since the run started 
 String getRunStopWatchTimeString(){
   String runStopWatchTimeString = "";
 
@@ -760,6 +753,7 @@ String getRunStopWatchTimeString(){
 }
 
 
+// Called once the user stops the current run
 void stopRun(){
   runStopWatchRunning = false;
   runElapsedTime = millis() - runStartTime;
@@ -786,7 +780,7 @@ void parseGPS(){
 
 }
 
-
+// Move button Interrupt Service Routine
 void moveButton_isr() {
 
   nowPush = millis();
@@ -798,7 +792,7 @@ void moveButton_isr() {
   lastPush = nowPush;
 }
 
-
+// Select button Interrupt Service Routine
 void selectButton_isr() {
 
   nowPush = millis();
@@ -810,7 +804,7 @@ void selectButton_isr() {
   lastPush = nowPush;
 }
 
-
+// Back button Interrupt Service Routine
 void backButton_isr() {
 
   nowPush = millis();
