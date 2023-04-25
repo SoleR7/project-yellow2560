@@ -27,10 +27,9 @@ void setupSD(){
 
   if(SD.exists(fileName)){
     SD.remove(fileName);
-    ssSD = "SD CLEANED";
   }
 
-  ssSD = "SD OK";
+  ssSD = "SD Ok";
   Serial.println(ssSD);
 }
 

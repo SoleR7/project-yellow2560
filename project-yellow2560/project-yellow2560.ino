@@ -5,6 +5,7 @@
 
 #include "mySD.h"
 #include "utility.h"
+#include "mySensors.h"
 
 //Serial port for GPS (TX3(14), RX3(15))
 #define GPSSerial Serial3
@@ -36,6 +37,7 @@ int menu_level = 0;
 int setupCircuit_subMenu_level = 0;
 bool subMenu = false;
 bool activateGPS = false;
+bool showSensorDataSubMenu = false;
 
 //oled.drawString(0, 1, "\x8d \xbb \xab"); //->  >> <<
 //oled.setInverseFont(1);   ON--OFF  oled.setInverseFont(0);
@@ -107,6 +109,9 @@ void setup(){
   
 
   setupOLED();
+
+  setupMMA8451();
+  setupBME280();
 }
 
 
@@ -117,7 +122,7 @@ void menuGUI_move(){
   if(!subMenu){
     menu_level++;
 
-    if(menu_level == 6){
+    if(menu_level == 7){
       menu_level = 1;
     }
 
@@ -183,6 +188,12 @@ void menuGUI_select(){
     case 5:
       Serial.println("GSM Info");
       displaySubMenuGSMinfo();
+      break;
+    
+    //>> Sensor readings
+    case 6:
+      Serial.println("Sensor data");
+      displaySubMenuSensorData();
       break; 
     }
 
@@ -348,6 +359,7 @@ void displayMainMenu(){
       oled.setFont(u8x8_font_amstrad_cpc_extended_f);
       oled.drawString(0, 3, "\xbb GPS Info");
       oled.drawString(0, 5, "GSM Info");
+      oled.drawString(0, 7, "Sensor data");
       break;
 
     //Page2
@@ -358,6 +370,18 @@ void displayMainMenu(){
       oled.setFont(u8x8_font_amstrad_cpc_extended_f);
       oled.drawString(0, 3, "GPS Info");
       oled.drawString(0, 5, "\xbb GSM Info");
+      oled.drawString(0, 7, "Sensor data");
+      break;
+    
+    //Page2
+    // >> Sensor data
+    case 6:
+      oled.setFont(u8x8_font_5x7_f);
+      oled.drawString(3, 1, " MAIN MENU");
+      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+      oled.drawString(0, 3, "GPS Info");
+      oled.drawString(0, 5, "GSM Info");
+      oled.drawString(0, 7, "\xbb Sensor data");
       break;
   }
 
@@ -371,13 +395,17 @@ void displaySubMenuSystemStatus(){
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
 
   oled.setCursor(0, 3);
-  oled.print(ssSD);
-  oled.setCursor(0, 5);
   oled.print(ssGPS);
-  oled.setCursor(0, 7);
+  oled.setCursor(0, 4);
   oled.print(ssGSM);
-  //TODO: add accelorometer and BMP280
+  oled.setCursor(0, 5);
+  oled.print(ssSD);
+  oled.setCursor(0, 6);
+  oled.print(ssMMA8451);
+  oled.setCursor(0, 7);
+  oled.print(ssBME280);
 }
+
 
 void displaySubMenuSetupCircuit(){
   oled.clear();
@@ -509,6 +537,31 @@ void displaySubMenuGSMinfo(){
   oled.drawString(0, 3, "1");
   oled.drawString(0, 5, "2");
   oled.drawString(0, 7, "3");
+}
+
+
+void displaySubMenuSensorData(){
+
+  float* accelerationReading = getCurrentAccelerationReading();
+
+  oled.clear();
+  oled.setFont(u8x8_font_5x7_f);
+  oled.drawString(2, 1, "Sensor data");
+  oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+
+  oled.setCursor(0, 3);
+  oled.print("X: " + String(accelerationReading[0]));
+  oled.setCursor(0, 4);
+  oled.print("Y: " + String(accelerationReading[1]));
+  oled.setCursor(0, 5);
+  oled.print("Z: " + String(accelerationReading[2]));
+
+  oled.setCursor(0, 6);
+  oled.print("Temp: " + String(getCurrentTemperature()) + char(176)+"C");
+  oled.setCursor(0, 7);
+  oled.print("Alt: " + String(getCurrentAltitude()) + "m");
+  
+  delay(2000);
 }
 
 
@@ -659,6 +712,11 @@ void loop(){
       activateGPS = true;
     }
 
+    //Check if the user is inside the Sensor data submenu
+    if(subMenu && menu_level==6){
+      showSensorDataSubMenu = true;
+    }
+
   }
   
   if (backButton_pressed) {
@@ -666,8 +724,13 @@ void loop(){
     menuGUI_back();
     if(!subMenu){
       Serial.println("GPS DEACTIVATED");              
-      activateGPS = false;    
+      activateGPS = false;
+      showSensorDataSubMenu = false;    
     }
+  }
+
+  if(showSensorDataSubMenu){
+    displaySubMenuSensorData();
   }
 
   if(activateGPS){
