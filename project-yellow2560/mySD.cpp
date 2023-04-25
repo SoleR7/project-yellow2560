@@ -41,7 +41,7 @@ void logInSD(String logDataLine){
   if(sdFile){
     sdFile.println(logDataLine);
     sdFile.close();
-    //delay(100);
+    delay(10);
   }else{
     Serial.println("Error openning " + fileName);
   }

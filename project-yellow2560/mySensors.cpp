@@ -11,6 +11,8 @@ String ssMMA8451 = "?";
 Adafruit_BME280 bme;
 String ssBME280 = "?";
 
+
+//Prepares the Adafruit's MMA8451 Accelerometer sensor
 void setupMMA8451(){
 
   if (! mma.begin()) {
@@ -25,6 +27,7 @@ void setupMMA8451(){
 }
 
 
+//Prepares the BME280 tempetature and atmospheric pressure sensor
 void setupBME280(){
   
   unsigned status = bme.begin(BME280_ADDRESS_ALTERNATE);  
@@ -39,7 +42,7 @@ void setupBME280(){
   ssBME280 = "BME280 Ok";
 }
 
-
+//Returns the current acceleration reading from MMA8451
 float* getCurrentAccelerationReading(){
   static float accelerationReading[3];
 
@@ -54,12 +57,13 @@ float* getCurrentAccelerationReading(){
 }
 
 
-
+//Returns the current temperature in ºC measured by BME280
 float getCurrentTemperature(){
   return bme.readTemperature();
 }
 
 
+//Returns the current altitude calculated by BME280
 float getCurrentAltitude(){
   return bme.readAltitude(SEALEVELPRESSURE_HPA);
 }

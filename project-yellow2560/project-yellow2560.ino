@@ -561,7 +561,7 @@ void displaySubMenuSensorData(){
   oled.setCursor(0, 7);
   oled.print("Alt: " + String(getCurrentAltitude()) + "m");
   
-  delay(2000);
+  delay(3000);
 }
 
 
@@ -668,9 +668,13 @@ String timeLineConstruction(){
 
 
 String logDataLineConstruction(){
+
+  float* accelerationReading = getCurrentAccelerationReading();
+
   String logLine = "";
 
-  //time,satellites,speed,lat,lon,lat(norm),lon(norm)
+  //time,satellites,speed,lat,lon,x,y,z,temp,alt
+
   logLine += timeLineConstruction();
   logLine += ",";
   logLine += String(GPS.satellites);
@@ -681,11 +685,15 @@ String logDataLineConstruction(){
   logLine += ",";
   logLine += String(GPS.longitudeDegrees, 5);
   logLine += ",";
-  logLine += String(GPS.latitude, 5);
-  logLine += String(GPS.lat);
+  logLine += String(accelerationReading[0]);
   logLine += ",";
-  logLine += String(GPS.longitude, 5);
-  logLine += String(GPS.lon);
+  logLine += String(accelerationReading[1]);
+  logLine += ",";
+  logLine += String(accelerationReading[2]);
+  logLine += ",";
+  logLine += String(getCurrentTemperature());
+  logLine += ",";
+  logLine += String(getCurrentAltitude());
 
   return logLine;
 }
@@ -787,6 +795,9 @@ void loop(){
     prevLon = currentLon;
 
     displaySubMenuRun();
+
+    String logDataLine = logDataLineConstruction();
+    logInSD(logDataLine);
   }
 
 
