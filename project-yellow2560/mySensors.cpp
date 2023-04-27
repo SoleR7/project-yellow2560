@@ -1,6 +1,11 @@
+/*  Adafruit's MMA8451 - Accelerometer
+    BME/BMP280 - Pressure and temeperature sensor
+-
+*/
+
 #include "mySensors.h"
 
-//Standard pressure at sea-level measured in hPa
+//Standard sea-level pressure measured in hPa
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 //MMA8451 object
@@ -12,7 +17,11 @@ Adafruit_BME280 bme;
 String ssBME280 = "?";
 
 
+<<<<<<< Updated upstream
 //Prepares the Adafruit's MMA8451 Accelerometer sensor
+=======
+//Setup for the MMA8451 Accelerometer
+>>>>>>> Stashed changes
 void setupMMA8451(){
 
   if (! mma.begin()) {
@@ -21,13 +30,16 @@ void setupMMA8451(){
     while (1);
   }
 
-  Serial.println("MMA8451 found!");
   mma.setRange(MMA8451_RANGE_2_G);
   ssMMA8451 = "MMA8451 Ok";
 }
 
 
+<<<<<<< Updated upstream
 //Prepares the BME280 tempetature and atmospheric pressure sensor
+=======
+//Setup for the BME/BMP280 sensor
+>>>>>>> Stashed changes
 void setupBME280(){
   
   unsigned status = bme.begin(BME280_ADDRESS_ALTERNATE);  
@@ -38,11 +50,14 @@ void setupBME280(){
     while (1) delay(10);
   }
 
-  Serial.println("BME280 found!");
   ssBME280 = "BME280 Ok";
 }
 
+<<<<<<< Updated upstream
 //Returns the current acceleration reading from MMA8451
+=======
+//Returns the current reading from the accelerometer
+>>>>>>> Stashed changes
 float* getCurrentAccelerationReading(){
   static float accelerationReading[3];
 
@@ -56,14 +71,22 @@ float* getCurrentAccelerationReading(){
   return accelerationReading;
 }
 
+<<<<<<< Updated upstream
 
 //Returns the current temperature in ºC measured by BME280
+=======
+//Returns the current temperature measured by BME/BMP280
+>>>>>>> Stashed changes
 float getCurrentTemperature(){
   return bme.readTemperature();
 }
 
+<<<<<<< Updated upstream
 
 //Returns the current altitude calculated by BME280
+=======
+//Returns the current altite calculated by BME/BMP280
+>>>>>>> Stashed changes
 float getCurrentAltitude(){
   return bme.readAltitude(SEALEVELPRESSURE_HPA);
 }

@@ -16,6 +16,12 @@
 //Threshold in GPS COORDINATES for the lapLine
 #define DISTANCE_TO_LAPLINE_THRESHOLD 3
 
+//BUTTONS
+#define BUTTON_MOVE_PIN 19
+#define BUTTON_SELECT_PIN 2
+#define BUTTON_BACK_PIN 3
+
+
 //GPS object initiation with selected Serial port
 Adafruit_GPS GPS(&GPSSerial);
 
@@ -39,14 +45,9 @@ bool subMenu = false;
 bool activateGPS = false;
 bool showSensorDataSubMenu = false;
 
-//oled.drawString(0, 1, "\x8d \xbb \xab"); //->  >> <<
-//oled.setInverseFont(1);   ON--OFF  oled.setInverseFont(0);
-
-
 //GLOBAL System Status String variables
 extern String ssGPS = "GPS ?";
 extern String ssGSM = "GSM ?";
-
 
 //RUN
 bool isRunning = false;
@@ -56,20 +57,12 @@ bool runStopWatchRunning = false;
 float prevLat = 0.0;
 float prevLon = 0.0;
 int lapCount = 0;
-
-
-
-//BUTTONS
-#define BUTTON_MOVE_PIN 19
-#define BUTTON_SELECT_PIN 2
-#define BUTTON_BACK_PIN 3
-
 int debounceTime = 200;
 
+//Buttons
 volatile unsigned long nowPush = 0;
 volatile unsigned long lastPush = 0;
 volatile unsigned long timeGap = 0;
-
 volatile bool moveButton_pressed = false;
 volatile bool selectButton_pressed = false;
 volatile bool backButton_pressed = false;
@@ -77,6 +70,7 @@ volatile bool backButton_pressed = false;
 
 
 //MAIN SETUP
+//--------------------------------------------------------------------------------------------------
 void setup(){
   Serial.begin(115200);
 
@@ -89,6 +83,8 @@ void setup(){
   attachInterrupt(digitalPinToInterrupt(BUTTON_MOVE_PIN), moveButton_isr, FALLING);
   attachInterrupt(digitalPinToInterrupt(BUTTON_SELECT_PIN), selectButton_isr, FALLING);
   attachInterrupt(digitalPinToInterrupt(BUTTON_BACK_PIN), backButton_isr, FALLING);
+
+  setupOLED();
 
   setupGPS();
   setupSD();
@@ -106,9 +102,6 @@ void setup(){
   }else{
     Serial.println("No previous lapLine found!");    
   }  
-  
-
-  setupOLED();
 
   setupMMA8451();
   setupBME280();
@@ -116,7 +109,9 @@ void setup(){
 
 
 
-// Movement through the menu
+// MOVEMENT THROUGH THE MENUS
+//--------------------------------------------------------------------------------------------------
+//Move Button
 void menuGUI_move(){
   
   if(!subMenu){
@@ -142,13 +137,10 @@ void menuGUI_move(){
   else if(menu_level==3){
     //Nothing, there's just one option to move to
   }
-
 }
 
 
-// Menu selection -> SubMenu
-//              or
-// SubMenu -> SubMenu Action
+//Select Button (Menu selection -> SubMenu) or (SubMenu -> SubMenu Action)
 void menuGUI_select(){
 
   if(!subMenu){
@@ -162,37 +154,31 @@ void menuGUI_select(){
     
     //>> System Status
     case 1:
-      Serial.println("System Status");
       displaySubMenuSystemStatus();
       break;
 
     //>> Setup Circuit
     case 2:
-      Serial.println("Setup Circuit");
       displaySubMenuSetupCircuit();    
       break;
 
     //>> Run
     case 3:
-      Serial.println("Run");
       displaySubMenuRun();
       break;
 
     //>> GPS Info
     case 4:
-      Serial.println("GPS Info");
       displaySubMenuGPSinfo(); 
       break;
 
     //>> GSM Info
     case 5:
-      Serial.println("GSM Info");
       displaySubMenuGSMinfo();
       break;
     
-    //>> Sensor readings
+    //>> Sensor data
     case 6:
-      Serial.println("Sensor data");
       displaySubMenuSensorData();
       break; 
     }
@@ -202,8 +188,8 @@ void menuGUI_select(){
     //Inside Setup Circuit
     if(menu_level==2){
       if(setupCircuit_subMenu_level == 0){
-        Serial.println("P1");
-        //Get P1 coordinates
+        Serial.print("P1: ");
+        //Get P1 GPS coordinates
         lapGPSpoints[0] = currentLatDeg;
         lapGPSpoints[1] = currentLonDeg;
         Serial.print(currentLatDeg);
@@ -211,8 +197,8 @@ void menuGUI_select(){
         Serial.println(currentLonDeg);
 
       }else if (setupCircuit_subMenu_level == 1){
-        Serial.println("P2");
-        //Get P2 coordinates
+        Serial.print("P2: ");
+        //Get P2 GPS coordinates
         lapGPSpoints[2] = currentLatDeg;
         lapGPSpoints[3] = currentLonDeg;
         Serial.print(currentLatDeg);
@@ -220,7 +206,7 @@ void menuGUI_select(){
         Serial.println(currentLonDeg);
 
       }else if (setupCircuit_subMenu_level == 2){
-        Serial.println("SAVE");
+        Serial.println("SAVED");
         //create JSON
         createLapLineJson(lapGPSpoints);
         lapLineRecorded = true;
@@ -253,8 +239,7 @@ void menuGUI_select(){
           displaySubMenuRun();
         }
       }else{
-        //No lapLine
-        // do nothing if there's no lapline set
+        //Do nothing if there's no lapline set
         Serial.println("NO LAPLINE!");
       }
     }
@@ -263,14 +248,13 @@ void menuGUI_select(){
   }
 
   subMenu = true;
-  
 }
 
 
-// Go back to MainMenu
+//Back Button
 void menuGUI_back(){
   
-  //Can't go back if the run is active
+  //Moves back to the main menu
   if(subMenu && !isRunning){
     menu_level = 1;
     setupCircuit_subMenu_level = 0;
@@ -283,7 +267,7 @@ void menuGUI_back(){
 
 
 //--------------OLED SCREEN---------------
-
+//OLED Screen setup
 void setupOLED(){
   //Mininum clock speed for the oled display
   Wire.setClock(10000);
@@ -302,12 +286,12 @@ void setupOLED(){
 
   menu_level++;
   displayMainMenu();
-  
-  //variable ok
   Serial.println("OLED OK");
 }
 
-
+// GUI
+//--------------------------------------------------------------------------------------------------
+//Controls MAIN Menu GUI
 void displayMainMenu(){
   oled.clear();
 
@@ -387,7 +371,7 @@ void displayMainMenu(){
 
 }
 
-
+//System Status SUBMENU
 void displaySubMenuSystemStatus(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
@@ -406,7 +390,7 @@ void displaySubMenuSystemStatus(){
   oled.print(ssBME280);
 }
 
-
+//Setup Circuit SUBMENU
 void displaySubMenuSetupCircuit(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
@@ -461,7 +445,7 @@ void displaySubMenuSetupCircuit(){
   
 }
 
-
+//RUN SUBMENU
 void displaySubMenuRun(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
@@ -506,7 +490,7 @@ void displaySubMenuRun(){
 
 }
 
-
+//GPS info SUBMENU
 void displaySubMenuGPSinfo(){
 
   oled.clear();
@@ -528,7 +512,8 @@ void displaySubMenuGPSinfo(){
 
 }
 
-
+//GSM info SUBMENU
+//TODO
 void displaySubMenuGSMinfo(){
   oled.clear();
   oled.setFont(u8x8_font_5x7_f);
@@ -539,7 +524,7 @@ void displaySubMenuGSMinfo(){
   oled.drawString(0, 7, "3");
 }
 
-
+//Sensor Data SUBMENU
 void displaySubMenuSensorData(){
 
   float* accelerationReading = getCurrentAccelerationReading();
@@ -565,14 +550,9 @@ void displaySubMenuSensorData(){
 }
 
 
-void updateGPSinfo(){
-  currentLatDeg = String(GPS.latitudeDegrees, 5);
-  currentLonDeg = String(GPS.longitudeDegrees, 5);
-  currentSat = "Sat:" + String(GPS.satellites);
-}
-
 
 //--------------GPS---------------
+//GPS setup
 void setupGPS(){
   
   GPS.begin(9600);
@@ -590,6 +570,12 @@ void setupGPS(){
 
   ssGPS = "GPS OK";
   Serial.println("GPS OK");
+}
+
+void updateGPSinfo(){
+  currentLatDeg = String(GPS.latitudeDegrees, 5);
+  currentLonDeg = String(GPS.longitudeDegrees, 5);
+  currentSat = "Sat:" + String(GPS.satellites);
 }
 
 
@@ -611,8 +597,6 @@ void clearGPS(){
 
   GPS.parse(GPS.lastNMEA());
 }
-
-
 
 void readGPS(){
 
@@ -640,6 +624,7 @@ void readGPS(){
 
 
 //--------------SD CARD READER---------------
+//Builds the current time String with HH:MM:SS format
 String timeLineConstruction(){
   //HH:MM:SS
   String timeLine = "";
@@ -666,7 +651,8 @@ String timeLineConstruction(){
   return timeLine;
 }
 
-
+//Buils the String line that will be send to be logged
+//TODO: add current lap
 String logDataLineConstruction(){
 
   float* accelerationReading = getCurrentAccelerationReading();
@@ -699,24 +685,24 @@ String logDataLineConstruction(){
 }
 
 
-
-
-//------------------------------------------------------------
-//MAIN LOOP
+// MAIN LOOP
+//--------------------------------------------------------------------------------------------------
 void loop(){
 
+  //BUTTONS
+  // Move Button
   if(moveButton_pressed){
     moveButton_pressed = false;
     menuGUI_move();
   }
 
+  // Select Button
   if (selectButton_pressed) {
     selectButton_pressed = false;
     menuGUI_select();
 
-    //Check if GPS is required for the submenu selected
+    //Check if GPS is required for the submenu selected (CircuitSetup, Run and GPS info)
     if(subMenu && (menu_level==2 || menu_level==3 || menu_level==4)){
-      Serial.println("GPS ACTIVATED");
       activateGPS = true;
     }
 
@@ -727,57 +713,55 @@ void loop(){
 
   }
   
+  // Back Button
   if (backButton_pressed) {
     backButton_pressed = false;
     menuGUI_back();
-    if(!subMenu){
-      Serial.println("GPS DEACTIVATED");              
+
+    if(!subMenu){             
       activateGPS = false;
       showSensorDataSubMenu = false;    
     }
   }
 
+  //FLAGS CHECK
+  // If this flag is true the SensorDataSubmenu needs to be refreshed on each main loop iteration
   if(showSensorDataSubMenu){
     displaySubMenuSensorData();
   }
 
+  // If this flag is true the GPS parsing must be active
   if(activateGPS){
     parseGPS();
   }
 
+  // If this flag is true the system has to initiate and manage the stopwatch and lapline checking each loop iteration
   if(isRunning){
 
-    //crono
+    //Stopwatch
     if(!runStopWatchRunning){
+      //Activate and reset the stopwatch
       runStopWatchRunning = true;
-      
-      //reset
       runElapsedTime = 0;
       runStartTime = 0;
-      
       runStartTime = millis();
     }
 
     if(runStopWatchRunning){
+      //The Run has been stopped, save the total elapsed time 
       runElapsedTime = millis() - runStartTime;
     }
 
 
-    //laps
-    Serial.println("------------------- LAPS");
+    //LapLine Checking
     float currentLat = GPS.latitudeDegrees;
-    Serial.print("currentLat: ");
-    Serial.println(currentLat, 5);
     float currentLon = GPS.longitudeDegrees;
-    Serial.print("currentLon: ");
-    Serial.println(currentLon, 5);
-    Serial.println("");
 
     //Check if the system has moved from one side of the lap line to the other
-    double distance1 = perpendicularDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), currentLat, currentLon);
-    double distance2 = perpendicularDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), prevLat, prevLon);
+    double distance1 = getSphericalDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), currentLat, currentLon);
+    double distance2 = getSphericalDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), prevLat, prevLon);
 
-    Serial.print("Current distance fron lapLine: ");
+    Serial.print("Current distance from lapLine: ");
     Serial.println(distance1);
     Serial.print("Previous distance from lapLine: ");
     Serial.println(distance2);
@@ -785,9 +769,8 @@ void loop(){
 
     if(distance1 < DISTANCE_TO_LAPLINE_THRESHOLD && distance2 > DISTANCE_TO_LAPLINE_THRESHOLD){
       //NEW LAP
-      Serial.println("NEW LAP!");
       lapCount++;
-      Serial.println("Laps: ");
+      Serial.println("LAPS: ");
       Serial.println(lapCount);
     }
 
@@ -800,8 +783,9 @@ void loop(){
     logInSD(logDataLine);
   }
 
-
+//END MAIN LOOP
 }
+
 
 //Generates a String representing the current elapsed time since the run started 
 String getRunStopWatchTimeString(){

@@ -1,21 +1,26 @@
+/* SD card reader
+-
+*/
+
+
+
 #include "mySD.h"
 
 //Chip Select pin for SD card reader
 #define SD_CS 53
 
-//SD card reader
-// gps coordinates
-String fileName = "data.csv";
+//Datalog file
+String fileName_log = "data.csv";
 File sdFile;
-// lapline json
+
+//Lapline json file
 String fileName_json = "lapline.txt";
 File sdFile_json;
-
-//JSON
 String jsonHeader = "lap_line";
 
 String ssSD = "SD ?";
 
+//SD Card Reader setup
 void setupSD(){
   pinMode(SD_CS, OUTPUT);
   
@@ -25,43 +30,42 @@ void setupSD(){
     while(1);
   }
 
-  if(SD.exists(fileName)){
-    SD.remove(fileName);
+  if(SD.exists(fileName_log)){
+    SD.remove(fileName_log);
   }
 
   ssSD = "SD Ok";
-  Serial.println(ssSD);
 }
 
-
+//Save a String in the datalog file
 void logInSD(String logDataLine){
 
-  sdFile = SD.open(fileName, FILE_WRITE);
+  sdFile = SD.open(fileName_log, FILE_WRITE);
 
   if(sdFile){
     sdFile.println(logDataLine);
     sdFile.close();
     delay(10);
   }else{
-    Serial.println("Error openning " + fileName);
+    Serial.println("Error openning " + fileName_log);
   }
 
 }
 
-
+//Create the lapLine JSON file serializing the data obtained from the setupCircuit menu
 void createLapLineJson(String gpsPoints[]){
 
-  //DELETES PREVIOUS JSON FILE
+  //If there's an existing JSON file it deletes it
   if(SD.exists(fileName_json)){
     SD.remove(fileName_json);
     Serial.println("Previous lapLine deleted!");
   }
 
-  // Create the JSON object
+  //Create the JSON object
   StaticJsonDocument<128> jsonDoc;
   JsonArray lap_line = jsonDoc.createNestedArray(jsonHeader);
 
-  // Add latitude and longitude data for both points
+  //Add latitude and longitude data for both points
   JsonArray lap_line_p1 = lap_line[0].createNestedArray("p1");
   lap_line_p1.add(gpsPoints[0]);
   lap_line_p1.add(gpsPoints[1]);
@@ -70,17 +74,18 @@ void createLapLineJson(String gpsPoints[]){
   lap_line_p2.add(gpsPoints[2]);
   lap_line_p2.add(gpsPoints[3]);
 
-  // Open an SD file to save it
+  //Open an SD file to save it
   sdFile_json = SD.open(fileName_json, FILE_WRITE);
 
-  // serialize the JSON object to the file
+  //Serialize the JSON object to the file
   serializeJson(jsonDoc, sdFile_json);
   sdFile_json.close();
 
-  Serial.println("json created");
+  Serial.println("New lapline JSON created");
 }
 
 
+//Obtains the data from the lapLine JSON file de-serializing the file
 String* getLapLineJsonPoints(){
 
   static String lapGPSpoints[4];
