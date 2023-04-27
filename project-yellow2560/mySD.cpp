@@ -3,7 +3,6 @@
 */
 
 
-
 #include "mySD.h"
 
 //Chip Select pin for SD card reader
@@ -20,6 +19,9 @@ String jsonHeader = "lap_line";
 
 String ssSD = "SD ?";
 
+
+
+
 //SD Card Reader setup
 void setupSD(){
   pinMode(SD_CS, OUTPUT);
@@ -27,7 +29,7 @@ void setupSD(){
   if(!SD.begin(SD_CS)){
     ssSD = "SD FAIL";
     Serial.println(ssSD);
-    while(1);
+    return;
   }
 
   if(SD.exists(fileName_log)){

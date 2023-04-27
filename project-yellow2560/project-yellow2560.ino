@@ -133,10 +133,7 @@ void menuGUI_move(){
 
     displaySubMenuSetupCircuit();
   }
-  //Inside RUN
-  else if(menu_level==3){
-    //Nothing, there's just one option to move to
-  }
+
 }
 
 
@@ -221,7 +218,7 @@ void menuGUI_select(){
       //Check lapLine
       if(lapLineRecorded){
         if(!isRunning){
-
+          //START RUN
           //clean previous laps and times
           lapCount = 0;
           prevLat = 0.0;
@@ -231,10 +228,9 @@ void menuGUI_select(){
           isRunning = true;
         
         }else{
-          //Stop run
-          stopRun();
-          //save?
-
+          //STOP RUN
+          runElapsedTime = millis() - runStartTime;
+          runStopWatchRunning = false;
           isRunning = false;
           displaySubMenuRun();
         }
@@ -569,7 +565,6 @@ void setupGPS(){
   delay(1000);
 
   ssGPS = "GPS OK";
-  Serial.println("GPS OK");
 }
 
 void updateGPSinfo(){
@@ -629,7 +624,7 @@ String timeLineConstruction(){
   //HH:MM:SS
   String timeLine = "";
 
-  if (GPS.hour < 10 + 2) { 
+  if (GPS.hour + 2 < 10) { 
     timeLine += "0"; 
   }
   timeLine += String(GPS.hour + 2, DEC);
@@ -659,7 +654,7 @@ String logDataLineConstruction(){
 
   String logLine = "";
 
-  //time,satellites,speed,lat,lon,x,y,z,temp,alt
+  //time,satellites,speed,lat,lon,x,y,z,temp,alt,currentLap
 
   logLine += timeLineConstruction();
   logLine += ",";
@@ -680,6 +675,8 @@ String logDataLineConstruction(){
   logLine += String(getCurrentTemperature());
   logLine += ",";
   logLine += String(getCurrentAltitude());
+  logLine += ",";
+  logLine += String(lapCount);
 
   return logLine;
 }
@@ -748,7 +745,6 @@ void loop(){
     }
 
     if(runStopWatchRunning){
-      //The Run has been stopped, save the total elapsed time 
       runElapsedTime = millis() - runStartTime;
     }
 
@@ -761,6 +757,7 @@ void loop(){
     double distance1 = getSphericalDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), currentLat, currentLon);
     double distance2 = getSphericalDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), prevLat, prevLon);
 
+    //Debug
     Serial.print("Current distance from lapLine: ");
     Serial.println(distance1);
     Serial.print("Previous distance from lapLine: ");
@@ -779,15 +776,17 @@ void loop(){
 
     displaySubMenuRun();
 
+    //Logs data
     String logDataLine = logDataLineConstruction();
     logInSD(logDataLine);
+    Serial.println(logDataLine);
   }
 
 //END MAIN LOOP
 }
 
 
-//Generates a String representing the current elapsed time since the run started 
+//Returns a String line representing the current elapsed time since the run started with MM:SS format
 String getRunStopWatchTimeString(){
   String runStopWatchTimeString = "";
 
@@ -811,13 +810,7 @@ String getRunStopWatchTimeString(){
 }
 
 
-// Called once the user stops the current run
-void stopRun(){
-  runStopWatchRunning = false;
-  runElapsedTime = millis() - runStartTime;
-}
-
-
+//Obtain GPS data from the GPS module
 void parseGPS(){
   readGPS();
 
@@ -828,12 +821,10 @@ void parseGPS(){
     if(menu_level==4){
       displaySubMenuGPSinfo();
     }
-    
-    //String logDataLine = logDataLineConstruction();
-    //logInSD(logDataLine);
 
   }else{
     //NO FIX
+    //Do nothing
   }
 
 }
