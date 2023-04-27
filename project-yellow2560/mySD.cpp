@@ -8,8 +8,9 @@
 //Chip Select pin for SD card reader
 #define SD_CS 53
 
-//Datalog file
-String fileName_log = "data.csv";
+//Datalog files
+String fileName_mainLog = "log.csv";
+String fileName_lapLog = "laps.csv";
 File sdFile;
 
 //Lapline json file
@@ -32,24 +33,33 @@ void setupSD(){
     return;
   }
 
-  if(SD.exists(fileName_log)){
-    SD.remove(fileName_log);
+  if(SD.exists(fileName_mainLog)){
+    SD.remove(fileName_mainLog);
+  }
+
+  if(SD.exists(fileName_lapLog)){
+    SD.remove(fileName_lapLog);
   }
 
   ssSD = "SD Ok";
 }
 
 //Save a String in the datalog file
-void logInSD(String logDataLine){
+void logInSD(String logDataLine, bool lapLog){
 
-  sdFile = SD.open(fileName_log, FILE_WRITE);
+  if(!lapLog){
+    sdFile = SD.open(fileName_mainLog, FILE_WRITE);
+  }else{
+    sdFile = SD.open(fileName_lapLog, FILE_WRITE);
+  }
+
 
   if(sdFile){
     sdFile.println(logDataLine);
     sdFile.close();
     delay(10);
   }else{
-    Serial.println("Error openning " + fileName_log);
+    Serial.println("Error openning the file to write");
   }
 
 }

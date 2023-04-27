@@ -8,7 +8,7 @@
 extern String ssSD;
 
 void setupSD();
-void logInSD(String logDataLine);
+void logInSD(String logDataLine, bool lapLog);
 void createLapLineJson(String gpsPoints[]);
 String* getLapLineJsonPoints();
 

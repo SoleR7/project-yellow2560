@@ -134,6 +134,23 @@ void menuGUI_move(){
     displaySubMenuSetupCircuit();
   }
 
+  //DEBUG
+  else if(menu_level==3){    
+
+    //NEW LAP
+    String newLapLogLine = "";
+    newLapLogLine += lapCount;
+    newLapLogLine += ",";
+    newLapLogLine += getRunStopWatchTimeString();
+
+    Serial.println(newLapLogLine);
+    logInSD(newLapLogLine, true);
+
+    lapCount++;
+    Serial.println("LAPS: ");
+    Serial.println(lapCount);
+  }
+
 }
 
 
@@ -654,7 +671,7 @@ String logDataLineConstruction(){
 
   String logLine = "";
 
-  //time,satellites,speed,lat,lon,x,y,z,temp,alt,currentLap
+  //CurrentTime,satellites,speed,lat,lon,x,y,z,temp,alt,currentLap,currentSessionTime
 
   logLine += timeLineConstruction();
   logLine += ",";
@@ -677,6 +694,8 @@ String logDataLineConstruction(){
   logLine += String(getCurrentAltitude());
   logLine += ",";
   logLine += String(lapCount);
+  logLine += ",";
+  logLine += getRunStopWatchTimeString();
 
   return logLine;
 }
@@ -766,6 +785,14 @@ void loop(){
 
     if(distance1 < DISTANCE_TO_LAPLINE_THRESHOLD && distance2 > DISTANCE_TO_LAPLINE_THRESHOLD){
       //NEW LAP
+      String newLapLogLine = "";
+      newLapLogLine += lapCount;
+      newLapLogLine += ",";
+      newLapLogLine += getRunStopWatchTimeString();
+
+      Serial.println(newLapLogLine);
+      logInSD(newLapLogLine, true);
+
       lapCount++;
       Serial.println("LAPS: ");
       Serial.println(lapCount);
@@ -778,7 +805,7 @@ void loop(){
 
     //Logs data
     String logDataLine = logDataLineConstruction();
-    logInSD(logDataLine);
+    logInSD(logDataLine, false);
     Serial.println(logDataLine);
   }
 
