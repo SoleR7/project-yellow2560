@@ -14,9 +14,9 @@ String fileName_lapLog = "laps.csv";
 File sdFile;
 
 //Lapline json file
-String fileName_json = "lapline.txt";
+String fileName_json = "lapMark.txt";
 File sdFile_json;
-String jsonHeader = "lap_line";
+String jsonHeader = "lap_mark";
 
 String ssSD = "SD ?";
 
@@ -65,7 +65,7 @@ void logInSD(String logDataLine, bool lapLog){
 }
 
 //Create the lapLine JSON file serializing the data obtained from the setupCircuit menu
-void createLapLineJson(String gpsPoints[]){
+void createLapMarkJson(String gpsPoint[]){
 
   //If there's an existing JSON file it deletes it
   if(SD.exists(fileName_json)){
@@ -73,18 +73,15 @@ void createLapLineJson(String gpsPoints[]){
     Serial.println("Previous lapLine deleted!");
   }
 
+
   //Create the JSON object
   StaticJsonDocument<128> jsonDoc;
-  JsonArray lap_line = jsonDoc.createNestedArray(jsonHeader);
+  JsonArray lap_mark = jsonDoc.createNestedArray(jsonHeader);
 
-  //Add latitude and longitude data for both points
-  JsonArray lap_line_p1 = lap_line[0].createNestedArray("p1");
-  lap_line_p1.add(gpsPoints[0]);
-  lap_line_p1.add(gpsPoints[1]);
+  //Add latitude and longitude data for the lapMark
+  lap_mark.add(gpsPoint[0].toFloat());
+  lap_mark.add(gpsPoint[1].toFloat());
 
-  JsonArray lap_line_p2 = lap_line[1].createNestedArray("p2");
-  lap_line_p2.add(gpsPoints[2]);
-  lap_line_p2.add(gpsPoints[3]);
 
   //Open an SD file to save it
   sdFile_json = SD.open(fileName_json, FILE_WRITE);
@@ -93,19 +90,19 @@ void createLapLineJson(String gpsPoints[]){
   serializeJson(jsonDoc, sdFile_json);
   sdFile_json.close();
 
-  Serial.println("New lapline JSON created");
+  Serial.println("New lapMark JSON created");
 }
 
 
 //Obtains the data from the lapLine JSON file de-serializing the file
-String* getLapLineJsonPoints(){
+String* getLapMarkJsonPoint(){
 
-  static String lapGPSpoints[4];
+  static String lapGPSpoint[2];
 
   if(SD.exists(fileName_json)){
     // Read the file and parse the JSON object
     sdFile_json = SD.open(fileName_json);
-    StaticJsonDocument<128> jsonDoc;
+    StaticJsonDocument<256> jsonDoc;
     DeserializationError error = deserializeJson(jsonDoc, sdFile_json);
     sdFile_json.close();
 
@@ -116,21 +113,17 @@ String* getLapLineJsonPoints(){
     }
 
     // Extract the info from the serialized json
-    float lap_line_p1_lat = jsonDoc[jsonHeader][0]["p1"][0]; // p1 lat
-    float lap_line_p1_lon = jsonDoc[jsonHeader][0]["p1"][1]; // p1 lon
-    float lap_line_p2_lat = jsonDoc[jsonHeader][1]["p2"][0]; // p2 lat
-    float lap_line_p2_lon = jsonDoc[jsonHeader][1]["p2"][1]; // p2 lon
+    float lap_mark_lat = jsonDoc[jsonHeader][0];
+    float lap_mark_lon = jsonDoc[jsonHeader][1];
 
-    lapGPSpoints[0] = String(lap_line_p1_lat, 5);
-    lapGPSpoints[1] = String(lap_line_p1_lon, 5);
-    lapGPSpoints[2] = String(lap_line_p2_lat, 5);
-    lapGPSpoints[3] = String(lap_line_p2_lon, 5);
+    lapGPSpoint[0] = String(lap_mark_lat, 5);
+    lapGPSpoint[1] = String(lap_mark_lon, 5);
     
   }else{
-    lapGPSpoints[0] = "empty";
+    lapGPSpoint[0] = "empty";
   }
 
-  return lapGPSpoints;
+  return lapGPSpoint;
 }
 
 

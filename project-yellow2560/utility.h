@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <math.h>
 
-double getSphericalDistance(double lat1, double lon1, double lat2, double lon2, float lat3, float lon3);
+double getSphericalDistance(double lat1, double lon1, float lat2, float lon2);
 double toRadians(double degrees);
 
 #endif

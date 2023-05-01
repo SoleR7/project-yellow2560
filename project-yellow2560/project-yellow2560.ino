@@ -14,7 +14,7 @@
 #define SPLASH_SCREEN_TIME 2000
 
 //Threshold in GPS COORDINATES for the lapLine
-#define DISTANCE_TO_LAPLINE_THRESHOLD 3
+#define DISTANCE_TO_LAPLINE_THRESHOLD 5
 
 //BUTTONS
 #define BUTTON_MOVE_PIN 19
@@ -27,13 +27,14 @@ Adafruit_GPS GPS(&GPSSerial);
 
 //GPS readings storage
 char c;
-String lapGPSpoints[4];
-bool lapLineRecorded = false;
+String lapGPSpoint[2];
+bool lapMarkRecorded = false;
 
 //GPS current info to display
 String currentLatDeg;
 String currentLonDeg;
 String currentSat;
+double currentDistanceToLapMark;
 
 //OLED display object
 U8X8_SH1106_128X64_NONAME_HW_I2C oled(U8X8_PIN_NONE);
@@ -57,9 +58,9 @@ bool runStopWatchRunning = false;
 float prevLat = 0.0;
 float prevLon = 0.0;
 int lapCount = 0;
-int debounceTime = 200;
 
 //Buttons
+int debounceTime = 200;
 volatile unsigned long nowPush = 0;
 volatile unsigned long lastPush = 0;
 volatile unsigned long timeGap = 0;
@@ -90,18 +91,18 @@ void setup(){
   setupSD();
 
   //Check if there's an existing lapLine in the json file
-  String* strptr = getLapLineJsonPoints();
+  String* strptr = getLapMarkJsonPoint();
   
   if(strptr[0] != "empty"){
-    lapGPSpoints[0] = strptr[0];
-    lapGPSpoints[1] = strptr[1];
-    lapGPSpoints[2] = strptr[2];
-    lapGPSpoints[3] = strptr[3];
-    Serial.println("Previous lapLine found!");
-    lapLineRecorded = true;
+    lapGPSpoint[0] = strptr[0];
+    lapGPSpoint[1] = strptr[1];
+    Serial.println("Previous lapMark found!");
+    lapMarkRecorded = true;
   }else{
-    Serial.println("No previous lapLine found!");    
-  }  
+    Serial.println("No previous lapMark found!");    
+  }
+
+  currentDistanceToLapMark = 0;
 
   setupMMA8451();
   setupBME280();
@@ -202,28 +203,29 @@ void menuGUI_select(){
     //Inside Setup Circuit
     if(menu_level==2){
       if(setupCircuit_subMenu_level == 0){
-        Serial.print("P1: ");
+        Serial.print("LapMark: ");
         //Get P1 GPS coordinates
-        lapGPSpoints[0] = currentLatDeg;
-        lapGPSpoints[1] = currentLonDeg;
+        lapGPSpoint[0] = currentLatDeg;
+        lapGPSpoint[1] = currentLonDeg;
         Serial.print(currentLatDeg);
         Serial.print("  ");
         Serial.println(currentLonDeg);
 
       }else if (setupCircuit_subMenu_level == 1){
-        Serial.print("P2: ");
-        //Get P2 GPS coordinates
-        lapGPSpoints[2] = currentLatDeg;
-        lapGPSpoints[3] = currentLonDeg;
-        Serial.print(currentLatDeg);
-        Serial.print("  ");
-        Serial.println(currentLonDeg);
-
-      }else if (setupCircuit_subMenu_level == 2){
         Serial.println("SAVED");
         //create JSON
-        createLapLineJson(lapGPSpoints);
-        lapLineRecorded = true;
+        Serial.println("Saving: ");
+        Serial.println(lapGPSpoint[0]);
+        Serial.println(lapGPSpoint[1]);
+        createLapMarkJson(lapGPSpoint);
+        lapMarkRecorded = true;
+
+      }else if (setupCircuit_subMenu_level == 2){
+        //Obtain current distance to lapMark
+        if(lapMarkRecorded){
+          currentDistanceToLapMark = getSphericalDistance(lapGPSpoint[0].toDouble(), lapGPSpoint[1].toDouble(), currentLatDeg.toFloat(), currentLonDeg.toFloat());
+        }
+        
       }
 
       displaySubMenuSetupCircuit();
@@ -233,7 +235,7 @@ void menuGUI_select(){
     if(menu_level==3){
       
       //Check lapLine
-      if(lapLineRecorded){
+      if(lapMarkRecorded){
         if(!isRunning){
           //START RUN
           //clean previous laps and times
@@ -253,7 +255,7 @@ void menuGUI_select(){
         }
       }else{
         //Do nothing if there's no lapline set
-        Serial.println("NO LAPLINE!");
+        Serial.println("NO LAPMARK!");
       }
     }
 
@@ -415,44 +417,47 @@ void displaySubMenuSetupCircuit(){
   switch(setupCircuit_subMenu_level){
     case 0:
       oled.setCursor(0, 2);
-      oled.print("\xbb P1: "+lapGPSpoints[0]);
+      oled.print("\xbb LapMark:");
       oled.setCursor(0, 3);
-      oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
+      oled.print(lapGPSpoint[0]+lapGPSpoint[1]);
 
       oled.setCursor(0, 4);
-      oled.print("P2: "+lapGPSpoints[2]);
-      oled.setCursor(0, 5);
-      oled.print("\t\t\t\t\t\t"+lapGPSpoints[3]);
+      oled.print("Confim");
 
-      oled.drawString(0, 7, "Confirm"); 
+      oled.drawString(0, 6, "Check distance"); 
+
+      oled.setCursor(0, 7);
+      oled.print("\t\t\t\t"+String(currentDistanceToLapMark)+"m");
       break;
     
     case 1:
       oled.setCursor(0, 2);
-      oled.print("P1: "+lapGPSpoints[0]);
+      oled.print("LapMark:");
       oled.setCursor(0, 3);
-      oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
+      oled.print(lapGPSpoint[0]+lapGPSpoint[1]);
 
       oled.setCursor(0, 4);
-      oled.print("\xbb P2: "+lapGPSpoints[2]);
-      oled.setCursor(0, 5);
-      oled.print("\t\t\t\t\t\t"+lapGPSpoints[3]);
-      
-      oled.drawString(0, 7, "Confirm"); 
+      oled.print("\xbb Confim");
+
+      oled.drawString(0, 6, "Check distance"); 
+
+      oled.setCursor(0, 7);
+      oled.print("\t\t\t\t"+String(currentDistanceToLapMark)+"m");
       break;
 
     case 2:
       oled.setCursor(0, 2);
-      oled.print("P1: "+lapGPSpoints[0]);
+      oled.print("LapMark:");
       oled.setCursor(0, 3);
-      oled.print("\t\t\t\t\t\t"+lapGPSpoints[1]);
+      oled.print(lapGPSpoint[0]+lapGPSpoint[1]);
 
       oled.setCursor(0, 4);
-      oled.print("P2: "+lapGPSpoints[2]);
-      oled.setCursor(0, 5);
-      oled.print("\t\t\t\t\t\t"+lapGPSpoints[3]);
-      
-      oled.drawString(0, 7, "\xbb Confirm"); 
+      oled.print("Confim");
+
+      oled.drawString(0, 6, "\xbb Check distance"); 
+
+      oled.setCursor(0, 7);
+      oled.print("\t\t\t\t"+String(currentDistanceToLapMark)+"m");
       break;
   }
   
@@ -471,10 +476,10 @@ void displaySubMenuRun(){
   if(!isRunning){
     
     oled.setCursor(0, 2);
-    if(lapLineRecorded){
-      oled.print("LapLine: \tok");
+    if(lapMarkRecorded){
+      oled.print("LapMark: \tok");
     }else{
-      oled.print("LapLine: \tX");
+      oled.print("LapMark: \tX");
     }
     
     oled.setCursor(0, 4);
@@ -489,7 +494,7 @@ void displaySubMenuRun(){
   //Running
   else{
     oled.setCursor(0, 2);
-    oled.print("LapLine: ok");
+    oled.print("LapMark: ok");
 
     oled.setCursor(0, 4);
     oled.print("\xbb Stop");
@@ -694,8 +699,8 @@ String logDataLineConstruction(){
   logLine += String(getCurrentAltitude());
   logLine += ",";
   logLine += String(lapCount);
-  logLine += ",";
-  logLine += getRunStopWatchTimeString();
+  //logLine += ",";
+  //logLine += getRunStopWatchTimeString();
 
   return logLine;
 }
@@ -773,14 +778,16 @@ void loop(){
     float currentLon = GPS.longitudeDegrees;
 
     //Check if the system has moved from one side of the lap line to the other
-    double distance1 = getSphericalDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), currentLat, currentLon);
-    double distance2 = getSphericalDistance(lapGPSpoints[0].toDouble(), lapGPSpoints[1].toDouble(), lapGPSpoints[2].toDouble(), lapGPSpoints[3].toDouble(), prevLat, prevLon);
+    double distance1 = getSphericalDistance(lapGPSpoint[0].toDouble(), lapGPSpoint[1].toDouble(), currentLat, currentLon);
+    double distance2 = getSphericalDistance(lapGPSpoint[0].toDouble(), lapGPSpoint[1].toDouble(), prevLat, prevLon);
 
     //Debug
+    /*
     Serial.print("Current distance from lapLine: ");
     Serial.println(distance1);
     Serial.print("Previous distance from lapLine: ");
     Serial.println(distance2);
+    */
 
 
     if(distance1 < DISTANCE_TO_LAPLINE_THRESHOLD && distance2 > DISTANCE_TO_LAPLINE_THRESHOLD){
@@ -790,12 +797,12 @@ void loop(){
       newLapLogLine += ",";
       newLapLogLine += getRunStopWatchTimeString();
 
-      Serial.println(newLapLogLine);
+      //Serial.println(newLapLogLine);
       logInSD(newLapLogLine, true);
 
       lapCount++;
-      Serial.println("LAPS: ");
-      Serial.println(lapCount);
+      //Serial.println("LAPS: ");
+      //Serial.println(lapCount);
     }
 
     prevLat = currentLat;
@@ -806,7 +813,7 @@ void loop(){
     //Logs data
     String logDataLine = logDataLineConstruction();
     logInSD(logDataLine, false);
-    Serial.println(logDataLine);
+    //Serial.println(logDataLine);
   }
 
 //END MAIN LOOP

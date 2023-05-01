@@ -2,7 +2,7 @@ import csv
 from simplekml import Kml, Style
 
 # Open the CSV file
-with open('DATA.CSV') as csvfile:
+with open('LOG.CSV') as csvfile:
     reader = csv.reader(csvfile)
 
     # Create a new KML object
@@ -28,4 +28,4 @@ with open('DATA.CSV') as csvfile:
         placemark.style = line_style
 
     # Save the KML file
-    kml.save('file.kml')
+    kml.save('test2.kml')

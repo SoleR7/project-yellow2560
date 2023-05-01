@@ -1,0 +1,21 @@
+https://www.movable-type.co.uk/scripts/latlong.html
+
+https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#An_algebraic_proof
+
+https://student.sem-app.com/wiki/doku.php/telemetry_data/tracks
+
+
+https://randomnerdtutorials.com/esp32-sim800l-publish-data-to-cloud/
+
+https://gist.github.com/abachman/e96b197d4f8488ba54436fa760c0c9c9
+
+https://adafruit.github.io/Adafruit_FONA/html/functions.html
+
+https://learn.adafruit.com/geofencing-with-the-fona-808-and-adafruit-io/integration-with-adafruit-io
+
+https://www.hackster.io/detox/mqtt-with-the-esp8266-on-the-thethings-io-1ba119
+
+https://www.hackster.io/ahsan-masood/capturing-visualizing-gps-data-using-esp8266-ubidots-1e4366
+
+LINK TONI:
+https://medium.com/leonardorebola/mqtt-y-gprs-en-arduino-usando-el-sim800-f6d9d388f99
