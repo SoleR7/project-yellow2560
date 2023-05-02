@@ -48,9 +48,9 @@ char replybuffer[255];
 //#else
 // On Leonardo/M0/etc, others with hardware serial, use hardware serial!
 //HardwareSerial Serial2(2);
-//HardwareSerial *fonaSerial = &Serial2;
+HardwareSerial *fonaSerial = &Serial2;
 
-HardwareSerial *fonaSerial = &Serial1;
+//HardwareSerial *fonaSerial = &Serial1;
 
 //#endif
 
