@@ -19,3 +19,5 @@ https://www.hackster.io/ahsan-masood/capturing-visualizing-gps-data-using-esp826
 
 LINK TONI:
 https://medium.com/leonardorebola/mqtt-y-gprs-en-arduino-usando-el-sim800-f6d9d388f99
+
+https://www.gpsvisualizer.com/
