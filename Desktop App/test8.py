@@ -2,7 +2,7 @@ import sys
 import io
 import folium  # pip install folium
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout
-from PyQt5.QtWebEngineWidgets import QWebEngineView  # pip install PyQtWebEngine
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 import csv
 
 """
