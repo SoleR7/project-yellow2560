@@ -1,13 +1,16 @@
 import sys
 import pandas as pd
+import csv
+from datetime import datetime, timedelta
 from fontTools.merge import first
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, \
+    QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
-
+from numpy import number
 
 
 class MainWindow(QMainWindow):
@@ -17,7 +20,7 @@ class MainWindow(QMainWindow):
 
         self.csv_file_name = None
 
-        #GUI
+        # GUI
         self.setWindowTitle("UPV Eco-Marathon Telemetry App")
 
         # logo
@@ -32,7 +35,7 @@ class MainWindow(QMainWindow):
         self.csv_button.clicked.connect(self.open_csv_file)
 
         # csv file info
-        #...
+        # ...
 
         # buttons
         self.racingLineMap_button = QPushButton("Racing line")
@@ -87,25 +90,96 @@ class MainWindow(QMainWindow):
         widget.setLayout(main_v_layout)
         self.setCentralWidget(widget)
 
-
     def open_csv_file(self):
         # Open a file dialog to choose a CSV file
         file_dialog = QFileDialog()
         file_dialog.setNameFilter("CSV Files (*.csv)")
         file_dialog.setDefaultSuffix("csv")
         file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-        
+
         if file_dialog.exec():
             # Get the name of the selected file and store it in self.csv_file_name
             self.csv_file_name = file_dialog.selectedFiles()[0]
             print(self.csv_file_name)
-        
-            #check if the file is valid
-            #...
-            #extract info from csv file
-            #...
-            #update info section
-            #...
+
+            # check if the file is valid
+            if self.is_valid_csv_file(self.csv_file_name, 11):
+                print("csv is valid!")
+                # extract info from csv file
+                self.extract_csv_info(self.csv_file_name, 11)
+
+                # Read the CSV file and create a pandas DataFrame.
+                self.df = pd.read_csv('LOG.CSV',
+                                      names=['CurrentTime', 'satellites', 'speed', 'latitude', 'longitude', 'x', 'y',
+                                             'z', 'temperature', 'altitude', 'currentLap'])
+                # Convert the CurrentTime column to a datetime object
+                self.df['CurrentTime'] = pd.to_datetime(self.df['CurrentTime'], format='%H:%M:%S')
+
+                # update info section
+                # ...
+            else:
+                dlg = QMessageBox.warning(self, "Error", "Selected csv file is not valid!")
+
+    def is_valid_csv_file(self, filename, num_columns):
+        with open(filename, 'r') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if len(row) != num_columns:
+                    return False
+            return True
+
+    def extract_csv_info(self, filename, num_columns):
+        with open(filename, 'r') as f:
+            reader = csv.reader(f)
+            rows = [row for row in reader if len(row) == num_columns]
+            if not rows:
+                return None
+
+            start_time = datetime.strptime(rows[0][0], '%H:%M:%S').strftime('%H:%M:%S')
+            stop_time = datetime.strptime(rows[-1][0], '%H:%M:%S').strftime('%H:%M:%S')
+            elapse_time = datetime.strptime(stop_time, '%H:%M:%S') - datetime.strptime(start_time, '%H:%M:%S')
+            elapse_time_str = str(elapse_time).split('.')[0]
+
+            laps = [int(row[-1]) for row in rows]
+            num_laps = laps[-1]
+
+            satellites = [int(row[1]) for row in rows]
+            avg_satellites = round(sum(satellites) / len(satellites), 2)
+
+            speeds = [float(row[2]) * 1.852 for row in rows]  # Convert knots to km/h
+            avg_speed = round(sum(speeds) / len(speeds), 2)
+
+            temperatures = [float(row[8]) for row in rows]
+            avg_temperature = round(sum(temperatures) / len(temperatures), 2)
+
+            altitudes = [float(row[9]) for row in rows]
+            max_altitude = max(altitudes)
+            min_altitude = min(altitudes)
+            altitude_diff = round(max_altitude - min_altitude, 2)
+
+            print(start_time)
+            print(stop_time)
+            print(elapse_time_str)
+            print(num_laps)
+            print(avg_satellites)
+            print(avg_speed)
+            print(avg_temperature)
+            print(max_altitude)
+            print(min_altitude)
+            print(altitude_diff)
+
+            return {
+                'start_time': start_time,
+                'stop_time': stop_time,
+                'elapsed_time': elapse_time_str,
+                'num_laps': num_laps,
+                'avg_satellites': avg_satellites,
+                'avg_speed': avg_speed,
+                'avg_temperature': avg_temperature,
+                'max_altitude': max_altitude,
+                'min_altitude': min_altitude,
+                'altitude_diff': altitude_diff
+            }
 
     def racingLineMap_plot(self):
         pass
