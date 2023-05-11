@@ -290,7 +290,7 @@ void setupOLED(){
   oled.begin();
   
   //Flip 180º
-  oled.setFlipMode(1);
+  //oled.setFlipMode(1);
 
   //Font
   oled.setFont(u8x8_font_amstrad_cpc_extended_f);
