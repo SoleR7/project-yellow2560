@@ -35,7 +35,14 @@ class MainWindow(QMainWindow):
         self.csv_button.clicked.connect(self.open_csv_file)
 
         # csv file info
-        # ...
+        self.info_label_sessionTime = QLabel('Session time: ')
+        self.info_label_gpsSats = QLabel('Avg GPS Satellites: ')
+        self.info_label_laps= QLabel('Laps: ')
+        self.info_label_temp = QLabel('Avg temp: ')
+        #self.info_label_temp.setVisible(False)
+        self.info_label_elevation = QLabel('Elevation change: ')
+        self.info_label_elevation.setEnabled(False)
+        
 
         # buttons
         self.racingLineMap_button = QPushButton("Racing line")
@@ -61,29 +68,43 @@ class MainWindow(QMainWindow):
         # layouts
         main_v_layout = QVBoxLayout()
         first_h_layout = QHBoxLayout()
+        second_h_layout = QHBoxLayout()
+        info_v_layout_left = QVBoxLayout()
+        info_v_layout_right = QVBoxLayout()
         button_h_layout_one = QHBoxLayout()
         button_h_layout_two = QHBoxLayout()
         button_h_layout_three = QHBoxLayout()
 
         main_v_layout.addWidget(self.logo_label)
         main_v_layout.addLayout(first_h_layout)
+        main_v_layout.addLayout(second_h_layout)
         main_v_layout.addLayout(button_h_layout_one)
         main_v_layout.addLayout(button_h_layout_two)
         main_v_layout.addLayout(button_h_layout_three)
 
         first_h_layout.addWidget(self.csv_button)
         first_h_layout.setContentsMargins(150, 10, 150, 30)
+        
+        second_h_layout.addLayout(info_v_layout_left)
+        second_h_layout.addLayout(info_v_layout_right)
+        second_h_layout.setContentsMargins(70, 10, 70, 5)
+        
+        info_v_layout_left.addWidget(self.info_label_sessionTime)
+        info_v_layout_left.addWidget(self.info_label_gpsSats)
+        info_v_layout_left.addWidget(self.info_label_laps)
+        info_v_layout_left.addWidget(self.info_label_temp)
+        info_v_layout_left.addWidget(self.info_label_elevation)
 
         button_h_layout_one.addWidget(self.racingLineMap_button)
         button_h_layout_one.addWidget(self.circuitElevation_button)
-        button_h_layout_one.setContentsMargins(110, 10, 110, 5)
+        button_h_layout_one.setContentsMargins(90, 10, 90, 5)
 
         button_h_layout_two.addWidget(self.speed_button)
         button_h_layout_two.addWidget(self.accelerometer_button)
-        button_h_layout_two.setContentsMargins(110, 0, 110, 5)
+        button_h_layout_two.setContentsMargins(90, 0, 90, 5)
 
         button_h_layout_three.addWidget(self.temperature_button)
-        button_h_layout_three.setContentsMargins(110, 0, 110, 20)
+        button_h_layout_three.setContentsMargins(90, 0, 90, 20)
 
         # placeholder widget to hold the main layout.
         widget = QWidget()
@@ -105,8 +126,17 @@ class MainWindow(QMainWindow):
             # check if the file is valid
             if self.is_valid_csv_file(self.csv_file_name, 11):
                 print("csv is valid!")
+                
                 # extract info from csv file
-                self.extract_csv_info(self.csv_file_name, 11)
+                self.csv_info = self.extract_csv_info(self.csv_file_name, 11)
+                
+                # update info section
+                self.info_label_sessionTime.setText("Session time: "+self.csv_info["elapsed_time"])
+                self.info_label_gpsSats.setText("Avg GPS Satellites: " + str(self.csv_info["avg_satellites"]))
+                self.info_label_laps.setText("Laps: " + str(self.csv_info["num_laps"]))
+                self.info_label_temp.setText("Avg Temp: " + str(self.csv_info["avg_temperature"]) + "ºC")
+                self.info_label_elevation.setText("Elevation change: " + str(self.csv_info["altitude_diff"]) + "m")
+
 
                 # Read the CSV file and create a pandas DataFrame.
                 self.df = pd.read_csv('LOG.CSV',
@@ -115,8 +145,7 @@ class MainWindow(QMainWindow):
                 # Convert the CurrentTime column to a datetime object
                 self.df['CurrentTime'] = pd.to_datetime(self.df['CurrentTime'], format='%H:%M:%S')
 
-                # update info section
-                # ...
+                
             else:
                 dlg = QMessageBox.warning(self, "Error", "Selected csv file is not valid!")
 
@@ -157,17 +186,6 @@ class MainWindow(QMainWindow):
             min_altitude = min(altitudes)
             altitude_diff = round(max_altitude - min_altitude, 2)
 
-            print(start_time)
-            print(stop_time)
-            print(elapse_time_str)
-            print(num_laps)
-            print(avg_satellites)
-            print(avg_speed)
-            print(avg_temperature)
-            print(max_altitude)
-            print(min_altitude)
-            print(altitude_diff)
-
             return {
                 'start_time': start_time,
                 'stop_time': stop_time,
@@ -180,6 +198,7 @@ class MainWindow(QMainWindow):
                 'min_altitude': min_altitude,
                 'altitude_diff': altitude_diff
             }
+
 
     def racingLineMap_plot(self):
         pass
