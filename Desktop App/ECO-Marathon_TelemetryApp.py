@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setFixedSize(850, 1000)
+        self.setFixedSize(650, 800)
         self.csv_file_name = None
         self.selected_lap = 0
 
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         # logo
         self.logo_label = QLabel(self)
         pixmap = QPixmap('logo_equipo.png')
-        pixmap = pixmap.scaled(850, 850, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(650, 800, Qt.KeepAspectRatio)
         self.logo_label.setPixmap(pixmap)
         self.logo_label.setGeometry(0, 0, pixmap.width(), pixmap.height())
 
