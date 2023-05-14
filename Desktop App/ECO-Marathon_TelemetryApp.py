@@ -2,8 +2,7 @@ import sys
 import datetime
 import pandas as pd
 import csv
-from datetime import datetime, timedelta
-from fontTools.merge import first
+from datetime import datetime
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -11,13 +10,63 @@ from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, \
     QFileDialog, QMessageBox, QComboBox
 from PyQt5.QtCore import Qt
-from numpy import number
+
+
+class accelerometerGraph(QWidget):
+    def __init__(self, df):
+        super().__init__()
+        self.setWindowTitle("Accelerometer Graph")
+
+        # Create a figure and a canvas to draw the plot on
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+
+        # Plot the temperature data on the figure
+        ax = self.figure.add_subplot(111)
+        ax.plot(df['CurrentTime'].values, df['x'].values, label='X')
+        ax.plot(df['CurrentTime'].values, df['y'].values, label='Y')
+        ax.plot(df['CurrentTime'].values, df['z'].values, label='Z')
+        ax.set_title('Accelerometer Readings over Time')
+        ax.set_xlabel('Time')
+        ax.set_ylabel('Acceleration (m/s^2)')
+        ax.legend()
+
+
+        # Create a navigation toolbar and add it to the layout
+        toolbar = NavigationToolbar(self.canvas, self)
+        layout = QVBoxLayout()
+        layout.addWidget(toolbar)
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)
+
+
+class temperatureGraph(QWidget):
+    def __init__(self, df):
+        super().__init__()
+        self.setWindowTitle("Temperature Graph")
+
+        # Create a figure and a canvas to draw the plot on
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+
+        # Plot the temperature data on the figure
+        ax = self.figure.add_subplot(111)
+        ax.plot(df['CurrentTime'].values, df['temperature'].values)
+        ax.set_title('Temperature over Time')
+        ax.set_xlabel('Time')
+        ax.set_ylabel('Temperature ºC')
+
+        # Create a navigation toolbar and add it to the layout
+        toolbar = NavigationToolbar(self.canvas, self)
+        layout = QVBoxLayout()
+        layout.addWidget(toolbar)
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)
 
 
 class speedGraph(QWidget):
     def __init__(self, df):
         super().__init__()
-        #self.setFixedSize(1600, 1000)
         self.setWindowTitle("Speed Graph")
 
         # Create a figure and a canvas to draw the plot on
@@ -29,7 +78,7 @@ class speedGraph(QWidget):
         ax.plot(df['CurrentTime'].values, df['speed'].values * 1.852)
         ax.set_title('Speed over Time')
         ax.set_xlabel('Time')
-        ax.set_ylabel('Speed')
+        ax.set_ylabel('Speed km/h')
 
         # Create a navigation toolbar and add it to the layout
         toolbar = NavigationToolbar(self.canvas, self)
@@ -52,9 +101,6 @@ class circuitElevationGraph(QWidget):
         # Plot the latitude and longitude data on a scatter plot
         ax = self.figure.add_subplot(111)
         scatter = ax.scatter(df['longitude'].values, df['latitude'].values, c=df['altitude'].values, cmap='viridis')
-        #ax.set_title('Latitude and Longitude')
-        #ax.set_xlabel('Longitude')
-        #ax.set_ylabel('Latitude')
         cbar = self.figure.colorbar(scatter)
         cbar.set_label('Altitude (meters)')
 
@@ -404,13 +450,15 @@ class MainWindow(QMainWindow):
     def speed_plot(self):
         self.speed_GraphWindow = speedGraph(self.df)
         self.speed_GraphWindow.show()
-        
 
     def accelerometer_plot(self):
-        print('accelerometer')
+        self.accelerometer_GraphWindow = accelerometerGraph(self.df)
+        self.accelerometer_GraphWindow.show()
+
 
     def temperature_plot(self):
-        print('temperature')
+        self.temperature_GraphWindow = temperatureGraph(self.df)
+        self.temperature_GraphWindow.show()
 
     def racingLineMap_plot(self):
         print('rancing line')
@@ -424,10 +472,12 @@ class MainWindow(QMainWindow):
         self.speedPerLap_GraphWindow.show()
 
     def accelerometer_perLap_plot(self):
-        print('accelerometer per lap')
+        self.accelerometerPerLap_GraphWindow = accelerometerGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
+        self.accelerometerPerLap_GraphWindow.show()
     
     def temp_perLap_plot(self):
-        print('temp per lap')
+        self.temperaturePerLap_GraphWindow = temperatureGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
+        self.temperaturePerLap_GraphWindow.show()
 
 
 
