@@ -1,7 +1,10 @@
 import sys
 import datetime
+from PyQt5 import QtCore
 import pandas as pd
 import csv
+from tkinter import *
+from PIL import Image, ImageTk
 from datetime import datetime
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -11,6 +14,42 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVB
     QFileDialog, QMessageBox, QComboBox
 from PyQt5.QtCore import Qt
 
+
+class drawCircuitWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        
+        app = Tk()
+        app.title("Circuit draw")
+        app.geometry("850x500")
+        app.resizable(False, False)
+
+
+        def get_x_and_y(event):
+            global lasx, lasy
+            lasx, lasy = event.x, event.y
+
+        def draw_smth(event):
+            global lasx, lasy
+            canvas.create_line((lasx, lasy, event.x, event.y), fill='red', width=3)
+            lasx, lasy = event.x, event.y
+            
+
+        canvas = Canvas(app, bg='black')
+        canvas.pack(anchor='nw', fill='both', expand=1)
+
+        canvas.bind("<Button-1>", get_x_and_y)
+        canvas.bind("<B1-Motion>", draw_smth)
+
+
+        image = Image.open("nogaro_layout.png")
+        image = image.resize((850,500), Image.LANCZOS)
+        image = ImageTk.PhotoImage(image)
+        canvas.create_image(0,0, image=image, anchor='nw')
+        
+        app.mainloop()
+    
+    
 
 class accelerometerGraph(QWidget):
     def __init__(self, df):
@@ -461,7 +500,8 @@ class MainWindow(QMainWindow):
         self.temperature_GraphWindow.show()
 
     def racingLineMap_plot(self):
-        print('rancing line')
+        #open image?
+        self.drawOnCircuitWindow = drawCircuitWindow()
 
     def circuitElevation_plot(self):
         self.circuitElevation_GraphWindow = circuitElevationGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
