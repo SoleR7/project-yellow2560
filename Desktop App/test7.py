@@ -36,7 +36,7 @@ class MyApp(QWidget):
 
         coordinate = (43.770682,-0.04058)
         m = folium.Map(
-            #tiles='cartodbdark_matter',
+            tiles='cartodbdark_matter',
             zoom_start=15,
             max_zoom=23,
             control_scale=True,
