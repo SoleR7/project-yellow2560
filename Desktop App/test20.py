@@ -710,10 +710,10 @@ class MainWindow(QMainWindow):
     def speed_plot(self):
         #self.speed_GraphWindow = speedGraph2(self.extract_csv_info_perLap(2, self.df), self.extract_csv_info_perLap(4, self.df))
         #self.speed_GraphWindow.show()
-        #self.combined_GraphWindow = combinedPlot2(self.extract_csv_info_perLap(2, self.df), self.extract_csv_info_perLap(4, self.df))
-        #self.combined_GraphWindow.show()
-        self.combined_GraphWindow = combinedPlot3(self.df)
+        self.combined_GraphWindow = combinedPlot2(self.extract_csv_info_perLap(2, self.df), self.extract_csv_info_perLap(4, self.df))
         self.combined_GraphWindow.show()
+        #self.combined_GraphWindow = combinedPlot3(self.df)
+        #self.combined_GraphWindow.show()
         
 
     def accelerometer_plot(self):

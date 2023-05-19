@@ -4,6 +4,8 @@ from PyQt5 import QtCore
 import pandas as pd
 import numpy as np
 import csv
+import folium
+import io
 from tkinter import *
 from PIL import Image, ImageTk
 from datetime import datetime
@@ -13,6 +15,7 @@ from matplotlib.figure import Figure
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, \
     QFileDialog, QMessageBox, QComboBox, QCheckBox
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import Qt
 
 
@@ -83,13 +86,13 @@ class sessionTelemetryGraph(QWidget):
             # Adjust the Y-axis divisions and precision for temperature and speed plot
             ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
             ax1.yaxis.set_major_formatter('{x:.1f}')
+            
 
         # Plot the XYZ readings on the figure
         if acc_activated:
             ax2.plot(df.index, df['x'], label='X', color='#F80606')
             ax2.plot(df.index, df['y'], label='Y', color='#1017F1')
             ax2.plot(df.index, df['z'], label='Z', color='#6BF50C')
-            ax2.set_title('Accelerometer Readings')
             ax2.set_ylabel('Acceleration (m/s^2)')
             ax2.legend()
             ax2.set_xticks([])
@@ -102,6 +105,168 @@ class sessionTelemetryGraph(QWidget):
         layout.addWidget(self.canvas)
         self.setLayout(layout)
 
+
+class sessionGPS_MapGraph(QWidget):
+    def __init__(self, csv_file_name, individualLap=False, lapNumber=0):
+        super().__init__()
+        self.setWindowTitle('GPS Data')
+        self.window_width, self.window_height = 1600, 1200
+        self.setMinimumSize(self.window_width, self.window_height)
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+        
+        trail_coordinates = self.obtainGPScoordinates(csv_file_name, individualLap, lapNumber)
+
+        coordinate = (trail_coordinates[0][0], trail_coordinates[0][1])
+        m = folium.Map(
+            tiles='OpenStreetMap',
+            zoom_start=17,
+            max_zoom=23,
+            control_scale=True,
+            location=coordinate
+        )
+
+        folium.PolyLine(trail_coordinates, tooltip="Coast").add_to(m)
+
+        # save map data to data object
+        data = io.BytesIO()
+        m.save(data, close_file=False)
+
+        webView = QWebEngineView()
+        webView.setHtml(data.getvalue().decode())
+        layout.addWidget(webView)
+    
+    
+    def obtainGPScoordinates(self, csv_file_name, individualLap=False, lapNumber=0):
+        df = pd.read_csv(csv_file_name, names=['CurrentTime', 'satellites', 'speed', 'latitude', 'longitude', 'x', 'y', 'z', 'temperature', 'altitude', 'currentLap'])
+        if individualLap:
+            df = df.loc[df['currentLap'] == lapNumber]
+        
+        coords = list(zip(df['latitude'], df['longitude']))
+        return coords
+
+
+class lapComparationTelemetryGraph(QWidget):
+        def __init__(self, dfA, speed_activated, acc_activated, temp_activated, dfB=None):
+            super().__init__()
+            if dfB is None:
+                self.setWindowTitle("Lap A telemetry")
+                # Create a figure and a canvas to draw the plot on
+                self.figure = Figure()
+                self.canvas = FigureCanvas(self.figure)
+
+                if not acc_activated and (speed_activated or temp_activated):
+                    ax1 = self.figure.add_subplot(111)
+                elif acc_activated and (speed_activated or temp_activated):
+                    ax1 = self.figure.add_subplot(211)
+                    ax2 = self.figure.add_subplot(212)
+                elif acc_activated and not speed_activated and not temp_activated:
+                    ax2 = self.figure.add_subplot(111)
+                    
+                
+                if speed_activated:
+                    ax1.plot(dfA.index, dfA['speed'].values * 1.852, label="Speed (km/h)", color='#D016F5')
+                
+                if temp_activated:
+                    ax1.plot(dfA.index, dfA['temperature'], label="Temperature (ºC)", color='#F5680D')
+                
+                if speed_activated or temp_activated:
+                    ax1.legend()
+                    ax1.set_xticks([])
+                    ax1.set_xticklabels([])
+
+                if speed_activated and temp_activated:
+                    # Adjust the Y-axis divisions and precision for temperature and speed plot
+                    ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
+                    ax1.yaxis.set_major_formatter('{x:.1f}')
+                
+                
+               # Plot the XYZ readings on the figure
+                if acc_activated:
+                    ax2.plot(dfA.index, dfA['x'], label='X', color='#F80606')
+                    ax2.plot(dfA.index, dfA['y'], label='Y', color='#1017F1')
+                    ax2.plot(dfA.index, dfA['z'], label='Z', color='#6BF50C')
+                    ax2.set_ylabel('Acceleration (m/s^2)')
+                    ax2.legend()
+                    ax2.set_xticks([])
+                    ax2.set_xticklabels([])
+
+                # Create a navigation toolbar and add it to the layout
+                toolbar = NavigationToolbar(self.canvas, self)
+                layout = QVBoxLayout()
+                layout.addWidget(toolbar)
+                layout.addWidget(self.canvas)
+                self.setLayout(layout)
+
+                
+            else:
+                self.setWindowTitle("Lap A vs B telemetry analysis")
+
+                # Create a figure and a canvas to draw the plot on
+                self.figure = Figure()
+                self.canvas = FigureCanvas(self.figure)
+
+                
+                if not acc_activated and (speed_activated or temp_activated):
+                    ax1 = self.figure.add_subplot(111)
+                elif acc_activated and (speed_activated or temp_activated):
+                    ax1 = self.figure.add_subplot(211)
+                    ax2 = self.figure.add_subplot(212)
+                elif acc_activated and not speed_activated and not temp_activated:
+                    ax2 = self.figure.add_subplot(111)
+                
+                if speed_activated and temp_activated:
+                    # Combine the temperature and speed data from both dataframes
+                    temperatures = pd.concat([dfA['temperature'], dfB['temperature']], axis=0)
+                    speeds = pd.concat([dfA['speed'], dfB['speed']], axis=0)
+
+                if speed_activated or temp_activated:
+                    # Create a common x-axis range based on the length of the longest dataframe
+                    max_length = max(len(dfA), len(dfB))
+                    x_temps_speeds = np.arange(max_length)
+                    
+                if acc_activated:
+                    max_length = max(len(dfA), len(dfB))
+                    x_xyz = np.arange(max_length)
+
+                if temp_activated:
+                    ax1.plot(x_temps_speeds[:len(dfA)], dfA['temperature'], label="A Air temperature", color='#F5680D')
+                    ax1.plot(x_temps_speeds[:len(dfB)], dfB['temperature'], label="B Air temperature", color='#F3BD99')
+                
+                if speed_activated:
+                    ax1.plot(x_temps_speeds[:len(dfA)], dfA['speed'].values * 1.852, label="A speed", color='#D016F5')
+                    ax1.plot(x_temps_speeds[:len(dfB)], dfB['speed'].values * 1.852, label="B speed", color='#EAB0F5')
+
+                if temp_activated or speed_activated:
+                    ax1.set_ylabel('Value')
+                    ax1.legend()
+                    ax1.set_xticks([])
+                    ax1.set_xticklabels([])
+
+                    # Adjust the Y-axis divisions and precision for temperature and speed plot
+                    ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
+                    ax1.yaxis.set_major_formatter('{x:.1f}')
+                
+                if acc_activated:
+                    ax2.plot(x_xyz[:len(dfA)], dfA['x'], label='A X', color='#F80606')
+                    ax2.plot(x_xyz[:len(dfA)], dfA['y'], label='A Y', color='#1017F1')
+                    ax2.plot(x_xyz[:len(dfA)], dfA['z'], label='A Z', color='#6BF50C')
+                    ax2.plot(x_xyz[:len(dfB)], dfB['x'], label='B X', color='#FB9090')
+                    ax2.plot(x_xyz[:len(dfB)], dfB['y'], label='B Y', color='#9598F3')
+                    ax2.plot(x_xyz[:len(dfB)], dfB['z'], label='B Z', color='#C1F39E')
+                    ax2.set_ylabel('Acceleration (m/s^2)')
+                    ax2.legend()
+                    
+                    ax2.set_xticks([])
+                    ax2.set_xticklabels([])
+
+                # Create a navigation toolbar and add it to the layout
+                toolbar = NavigationToolbar(self.canvas, self)
+                layout = QVBoxLayout()
+                layout.addWidget(toolbar)
+                layout.addWidget(self.canvas)
+                self.setLayout(layout)
 
 
 class accelerometerGraph(QWidget):
@@ -543,7 +708,7 @@ class MainWindow(QMainWindow):
                 
                 
             else:
-                dlg = QMessageBox.warning(self, "Error", "Selected csv file is not valid!")
+                QMessageBox.warning(self, "Error", "Selected csv file is not valid!")
 
 
     def is_valid_csv_file(self, filename, num_columns):
@@ -609,10 +774,8 @@ class MainWindow(QMainWindow):
 
     def update_lapSelected_A(self, index):
         self.selected_lapA = index
-        #print(self.selected_lapA)
         
         if self.selected_lapA >= 0:
-            #print("->"+str(self.selected_lap))
             currentLap_df = self.extract_csv_info_perLap(self.selected_lapA, self.df)
             
             currentLap_avg_speed = round(currentLap_df['speed'].mean() * 1.852, 2)
@@ -631,7 +794,6 @@ class MainWindow(QMainWindow):
         self.selected_lapB = index
         
         if self.selected_lapB >= 0:
-            #print("->"+str(self.selected_lap))
             currentLap_df = self.extract_csv_info_perLap(self.selected_lapB, self.df)
             
             currentLap_avg_speed = round(currentLap_df['speed'].mean() * 1.852, 2)
@@ -650,81 +812,84 @@ class MainWindow(QMainWindow):
         df_currentLap = dataFrame.loc[dataFrame['currentLap'] == lap_selected]
         return df_currentLap
     
+    
+    
     # GUI listeners methods
     def checkBox_sessionGraph_speed_changed(self):
         if self.checkBox_SessionGraphs_speed.isChecked():
-            print('check speed 1')
             self.sessionGraph_speed_selected = True
         else:
-            print('No speed 1')
             self.sessionGraph_speed_selected = False
     
     def checkBox_sessionGraph_accelerometer_changed(self):
         if self.checkBox_SessionGraphs_accelerometer.isChecked():
-            print('check acc 1')
             self.sessionGraph_acc_selected = True
         else:
-            print('No acc 1')
             self.sessionGraph_acc_selected = False
             
     def checkBox_sessionGraph_temp_changed(self):
         if self.checkBox_SessionGraphs_temp.isChecked():
-            print('check temp 1')
             self.sessionGraph_temp_selected = True
         else:
-            print('No temp 1')    
             self.sessionGraph_temp_selected = False   
     
     def sessionGraph_telemetry_ShowPlot(self):
-        print('plot 1')
         if not self.sessionGraph_speed_selected and not self.sessionGraph_acc_selected and not self.sessionGraph_temp_selected:
-            dlg = QMessageBox.warning(self, "Error", "Please, select at least one option.")
+            QMessageBox.warning(self, "Error", "Please, select at least one option.")
         else:    
             self.telemetry_GraphWindow = sessionTelemetryGraph(self.df, self.sessionGraph_speed_selected, self.sessionGraph_acc_selected, self.sessionGraph_temp_selected)
             self.telemetry_GraphWindow.show()
             
     
     def sessionGrap_gpsData_ShowPlot(self):
-        print('gps 1')
+        self.sessionGPSdata_GraphWindow = sessionGPS_MapGraph(self.csv_file_name)
+        self.sessionGPSdata_GraphWindow.show()
         
     
     def checkBox_lapComparation_speed_changed(self):
         if self.checkBox_LapComparation_speed.isChecked():
-            print('check speed 2')
             self.lapComparationGraph_speed_selected = True
         else:
-            print('No speed 2')
             self.lapComparationGraph_speed_selected = False
     
     def checkBox_lapComparation_accelerometer_changed(self):
         if self.checkBox_LapComparation_accelerometer.isChecked():
-            print('check acc 2')
             self.lapComparationGraph_acc_selected = True
         else:
-            print('No acc 2')
             self.lapComparationGraph_acc_selected = False
             
     def checkBox_lapComparation_temp_changed(self):
         if self.checkBox_LapComparation_temp.isChecked():
-            print('check temp 2')
             self.lapComparationGraph_temp_selected = True
         else:
-            print('No temp 2')
             self.lapComparationGraph_temp_selected = False  
     
     
     def lapComparation_telemetry_ShowPlot(self):
-        print('plot 2')
+        if not self.lapComparationGraph_speed_selected and not self.lapComparationGraph_acc_selected and not self.lapComparationGraph_temp_selected:
+            QMessageBox.warning(self, "Error", "Please, select at least one option.")
+        else:
+            dfA = self.extract_csv_info_perLap(self.selected_lapA, self.df)
+            
+            if self.lapB_selected:
+                dfB = self.extract_csv_info_perLap(self.selected_lapB, self.df)
+                self.lapComparationTelemetry_GraphWindow = lapComparationTelemetryGraph(dfA, self.lapComparationGraph_speed_selected, self.lapComparationGraph_acc_selected, self.lapComparationGraph_temp_selected, dfB)                
+            else:
+                self.lapComparationTelemetry_GraphWindow = lapComparationTelemetryGraph(dfA, self.lapComparationGraph_speed_selected, self.lapComparationGraph_acc_selected, self.lapComparationGraph_temp_selected)
+            
+            self.lapComparationTelemetry_GraphWindow.show()
+    
     
     def lapComparation_gpsData_ShowPlot(self):
-        print('gps 2')
+        self.lapComparationGPSdata_GraphWindow = sessionGPS_MapGraph(self.csv_file_name, True, self.selected_lapA)
+        self.lapComparationGPSdata_GraphWindow.show()
     
     def lapComparation_elevationMap_ShowPlot(self):
-        print('elevation map')
+        self.elevationMap_GraphWindow = circuitElevationGraph(self.extract_csv_info_perLap(self.selected_lapA, self.df))
+        self.elevationMap_GraphWindow.show()
         
     def checkBox_bLap_changed(self):
         if self.checkBox_B_lap.isChecked():
-            print('check b lap')
             self.lapB_selected = True
             self.comboBox_B.setEnabled(True)
             self.b_label.setEnabled(True)
@@ -733,7 +898,6 @@ class MainWindow(QMainWindow):
             self.lapComparationB_avgSpeed_labelTitle.setEnabled(True)
             self.lapComparationB_avgTemp_labelTitle.setEnabled(True)
         else:
-            print('No b lap')
             self.lapB_selected = False
             self.comboBox_B.setEnabled(False)
             self.b_label.setEnabled(False)
@@ -743,43 +907,8 @@ class MainWindow(QMainWindow):
             self.lapComparationB_avgTemp_labelTitle.setEnabled(False)
     
     
-    
-    
     def show_CircuitSketch(self):
         self.circuitSketchWindow = drawCircuitWindow()
-    
-
-    def speed_plot(self):
-        self.speed_GraphWindow = speedGraph(self.df)
-        self.speed_GraphWindow.show()
-
-    def accelerometer_plot(self):
-        self.accelerometer_GraphWindow = accelerometerGraph(self.df)
-        self.accelerometer_GraphWindow.show()
-
-
-    def temperature_plot(self):
-        self.temperature_GraphWindow = temperatureGraph(self.df)
-        self.temperature_GraphWindow.show()
-
-    def racingLineMap_plot(self):
-        self.drawOnCircuitWindow = drawCircuitWindow()
-
-    def circuitElevation_plot(self):
-        self.circuitElevation_GraphWindow = circuitElevationGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
-        self.circuitElevation_GraphWindow.show()
-    
-    def speed_perLap_plot(self):
-        self.speedPerLap_GraphWindow = speedGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
-        self.speedPerLap_GraphWindow.show()
-
-    def accelerometer_perLap_plot(self):
-        self.accelerometerPerLap_GraphWindow = accelerometerGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
-        self.accelerometerPerLap_GraphWindow.show()
-    
-    def temp_perLap_plot(self):
-        self.temperaturePerLap_GraphWindow = temperatureGraph(self.extract_csv_info_perLap(self.selected_lap, self.df))
-        self.temperaturePerLap_GraphWindow.show()
 
 
 
