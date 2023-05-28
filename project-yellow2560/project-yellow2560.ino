@@ -7,6 +7,8 @@
 #include "utility.h"
 #include "mySensors.h"
 
+#include "Adafruit_FONA.h"
+
 //Serial port for GPS (TX3(14), RX3(15))
 #define GPSSerial Serial3
 
@@ -20,6 +22,12 @@
 #define BUTTON_MOVE_PIN 19
 #define BUTTON_SELECT_PIN 2
 #define BUTTON_BACK_PIN 3
+
+//GSM
+#define FONA_RST 22
+#define PITWALL_PHONE_NUMBER "+34653045195"
+HardwareSerial *fonaSerial = &Serial2;
+Adafruit_FONA fona = Adafruit_FONA(FONA_RST);
 
 
 //GPS object initiation with selected Serial port
@@ -42,6 +50,7 @@ U8X8_SH1106_128X64_NONAME_HW_I2C oled(U8X8_PIN_NONE);
 //MENU
 int menu_level = 0;
 int setupCircuit_subMenu_level = 0;
+int gsmInfo_subMenu_level = 0;
 bool subMenu = false;
 bool activateGPS = false;
 bool showSensorDataSubMenu = false;
@@ -106,6 +115,7 @@ void setup(){
 
   setupMMA8451();
   setupBME280();
+  //setupGSM();
 }
 
 
@@ -134,8 +144,19 @@ void menuGUI_move(){
 
     displaySubMenuSetupCircuit();
   }
+  //Inside GSM info
+  else if(menu_level==5){
+    gsmInfo_subMenu_level++;
+
+    if(gsmInfo_subMenu_level == 2){
+      gsmInfo_subMenu_level = 0;
+    }
+
+    displaySubMenuGSMinfo();
+  }
 
   //DEBUG
+  /*
   else if(menu_level==3){    
 
     //NEW LAP
@@ -151,6 +172,7 @@ void menuGUI_move(){
     Serial.println("LAPS: ");
     Serial.println(lapCount);
   }
+  */
 
 }
 
@@ -258,7 +280,16 @@ void menuGUI_select(){
         Serial.println("NO LAPMARK!");
       }
     }
+    //Inside GSM info
+    if (menu_level==5){
+      if(gsmInfo_subMenu_level == 0){
+        call_pitWall();
+      }
+      else if(gsmInfo_subMenu_level == 1){
+        hangup_pitWall();
+      }
 
+    }
     
   }
 
@@ -534,12 +565,25 @@ void displaySubMenuGPSinfo(){
 //TODO
 void displaySubMenuGSMinfo(){
   oled.clear();
-  oled.setFont(u8x8_font_5x7_f);
-  oled.drawString(4, 1, "GSM Info");
-  oled.setFont(u8x8_font_amstrad_cpc_extended_f);
-  oled.drawString(0, 3, "1");
-  oled.drawString(0, 5, "2");
-  oled.drawString(0, 7, "3");
+
+  switch(gsmInfo_subMenu_level){
+    case 0:
+      oled.setFont(u8x8_font_5x7_f);
+      oled.drawString(4, 1, "GSM Info");
+      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+      oled.drawString(0, 3, "\xbb Call pitwall");
+      oled.drawString(0, 5, "Hang-up");
+      break;
+    
+    case 1:
+      oled.setFont(u8x8_font_5x7_f);
+      oled.drawString(4, 1, "GSM Info");
+      oled.setFont(u8x8_font_amstrad_cpc_extended_f);
+      oled.drawString(0, 3, "Call pitwall");
+      oled.drawString(0, 5, "\xbb Hang-up");
+      break;
+  }
+
 }
 
 //Sensor Data SUBMENU
@@ -669,8 +713,7 @@ String timeLineConstruction(){
 }
 
 //Buils the String line that will be send to be logged
-//TODO: add current lap
-String logDataLineConstruction(){
+ String logDataLineConstruction(){
 
   float* accelerationReading = getCurrentAccelerationReading();
 
@@ -703,6 +746,59 @@ String logDataLineConstruction(){
   //logLine += getRunStopWatchTimeString();
 
   return logLine;
+}
+
+//--------------GSM---------------
+void setupGSM(){
+    while (!Serial);
+
+  Serial.println(F("FONA basic test"));
+  Serial.println(F("Initializing FONA...."));
+
+  fonaSerial->begin(4800);
+  if (! fona.begin(*fonaSerial)) {
+    Serial.println(F("Couldn't find FONA"));
+    pinMode(FONA_RST, OUTPUT);
+    int attempt = 0;
+    while (! fona.begin(*fonaSerial) && attempt != 5) {
+      Serial.print("Resetting FONA...Attempt");      
+      Serial.println(++attempt);
+      digitalWrite(FONA_RST, LOW);
+    }
+  }
+  digitalWrite(FONA_RST ,HIGH);
+
+  uint8_t type = fona.type();
+
+  Serial.println(F("FONA is OK"));
+  Serial.print(F("Found "));
+  
+  if(type == FONA800H){
+    Serial.println(F("FONA 800H"));
+    ssGSM = "GSM OK";
+  }
+
+}
+
+
+void call_pitWall(){
+  Serial.print(F("Calling ")); 
+  Serial.println(PITWALL_PHONE_NUMBER);
+  if (!fona.callPhone(PITWALL_PHONE_NUMBER)) {
+    Serial.println(F("Failed"));
+  } else {
+    Serial.println(F("Sent!"));
+  }
+}
+
+
+void hangup_pitWall(){
+  Serial.println("No call!");
+  if (! fona.hangUp()) {
+    Serial.println(F("Failed"));
+  } else {
+    Serial.println(F("OK!"));
+  }
 }
 
 
@@ -898,4 +994,3 @@ void backButton_isr() {
   }
   lastPush = nowPush;
 }
-

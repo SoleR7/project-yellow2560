@@ -126,5 +126,3 @@ String* getLapMarkJsonPoint(){
   return lapGPSpoint;
 }
 
-
-
