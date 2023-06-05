@@ -1,5 +1,4 @@
 /* Utility
--
 */
 
 #include "utility.h"

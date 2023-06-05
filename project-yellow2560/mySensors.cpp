@@ -1,6 +1,5 @@
 /*  Adafruit's MMA8451 - Accelerometer
     BME/BMP280 - Pressure and temeperature sensor
--
 */
 
 #include "mySensors.h"

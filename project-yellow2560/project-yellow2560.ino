@@ -25,7 +25,7 @@
 
 //GSM
 #define FONA_RST 22
-#define PITWALL_PHONE_NUMBER "+34653045195"
+#define PITWALL_PHONE_NUMBER ""
 HardwareSerial *fonaSerial = &Serial2;
 Adafruit_FONA fona = Adafruit_FONA(FONA_RST);
 
@@ -115,7 +115,7 @@ void setup(){
 
   setupMMA8451();
   setupBME280();
-  //setupGSM();
+  setupGSM();
 }
 
 
@@ -154,25 +154,6 @@ void menuGUI_move(){
 
     displaySubMenuGSMinfo();
   }
-
-  //DEBUG
-  /*
-  else if(menu_level==3){    
-
-    //NEW LAP
-    String newLapLogLine = "";
-    newLapLogLine += lapCount;
-    newLapLogLine += ",";
-    newLapLogLine += getRunStopWatchTimeString();
-
-    Serial.println(newLapLogLine);
-    logInSD(newLapLogLine, true);
-
-    lapCount++;
-    Serial.println("LAPS: ");
-    Serial.println(lapCount);
-  }
-  */
 
 }
 
@@ -562,7 +543,6 @@ void displaySubMenuGPSinfo(){
 }
 
 //GSM info SUBMENU
-//TODO
 void displaySubMenuGSMinfo(){
   oled.clear();
 
@@ -628,18 +608,20 @@ void setupGPS(){
   
   //Antenna info  
   //GPS.sendCommand("$CDCMD,33,1*7C");
+
   delay(1000);
 
   ssGPS = "GPS OK";
 }
 
+// Updates the global variables related to the current GPS position 
 void updateGPSinfo(){
   currentLatDeg = String(GPS.latitudeDegrees, 5);
   currentLonDeg = String(GPS.longitudeDegrees, 5);
   currentSat = "Sat:" + String(GPS.satellites);
 }
 
-
+// Clean GPS NMEA buffer
 void clearGPS(){
 
   while(!GPS.newNMEAreceived()) {
@@ -659,6 +641,7 @@ void clearGPS(){
   GPS.parse(GPS.lastNMEA());
 }
 
+// Gets the raw info from the GPS module
 void readGPS(){
 
   clearGPS();
@@ -742,13 +725,13 @@ String timeLineConstruction(){
   logLine += String(getCurrentAltitude());
   logLine += ",";
   logLine += String(lapCount);
-  //logLine += ",";
-  //logLine += getRunStopWatchTimeString();
 
   return logLine;
 }
 
 //--------------GSM---------------
+
+//Prepares the GSM module to make phone calls
 void setupGSM(){
     while (!Serial);
 
@@ -780,7 +763,7 @@ void setupGSM(){
 
 }
 
-
+// Makes the call to the desired phone number
 void call_pitWall(){
   Serial.print(F("Calling ")); 
   Serial.println(PITWALL_PHONE_NUMBER);
@@ -791,7 +774,7 @@ void call_pitWall(){
   }
 }
 
-
+// Ends phone call
 void hangup_pitWall(){
   Serial.println("No call!");
   if (! fona.hangUp()) {
