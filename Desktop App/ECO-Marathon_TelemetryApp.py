@@ -1,6 +1,5 @@
 import sys
 import datetime
-from PyQt5 import QtCore
 import pandas as pd
 import csv
 from tkinter import *
@@ -164,7 +163,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setFixedSize(650, 850)
+        self.setFixedSize(550, 700)
         self.csv_file_name = None
         self.selected_lap = 0
 
@@ -174,7 +173,7 @@ class MainWindow(QMainWindow):
         # logo
         self.logo_label = QLabel(self)
         pixmap = QPixmap('logo_equipo.png')
-        pixmap = pixmap.scaled(650, 850, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(550, 700, Qt.KeepAspectRatio)
         self.logo_label.setPixmap(pixmap)
         self.logo_label.setGeometry(0, 0, pixmap.width(), pixmap.height())
 

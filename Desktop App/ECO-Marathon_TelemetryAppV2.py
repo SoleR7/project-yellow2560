@@ -1,6 +1,5 @@
 import sys
 import datetime
-from PyQt5 import QtCore
 import pandas as pd
 import numpy as np
 import csv
@@ -22,12 +21,11 @@ from PyQt5.QtCore import Qt
 class drawCircuitWindow(QWidget):
     def __init__(self):
         super().__init__()
-        
+
         app = Tk()
         app.title("Circuit draw")
         app.geometry("850x500")
         app.resizable(False, False)
-
 
         def get_x_and_y(event):
             global lasx, lasy
@@ -37,7 +35,6 @@ class drawCircuitWindow(QWidget):
             global lasx, lasy
             canvas.create_line((lasx, lasy, event.x, event.y), fill='red', width=3)
             lasx, lasy = event.x, event.y
-            
 
         canvas = Canvas(app, bg='black')
         canvas.pack(anchor='nw', fill='both', expand=1)
@@ -45,14 +42,13 @@ class drawCircuitWindow(QWidget):
         canvas.bind("<Button-1>", get_x_and_y)
         canvas.bind("<B1-Motion>", draw_smth)
 
-
         image = Image.open("nogaro_layout.png")
-        image = image.resize((850,500), Image.LANCZOS)
+        image = image.resize((850, 500), Image.LANCZOS)
         image = ImageTk.PhotoImage(image)
-        canvas.create_image(0,0, image=image, anchor='nw')
-        
+        canvas.create_image(0, 0, image=image, anchor='nw')
+
         app.mainloop()
-    
+
 
 class sessionTelemetryGraph(QWidget):
     def __init__(self, df, speed_activated, acc_activated, temp_activated):
@@ -70,13 +66,13 @@ class sessionTelemetryGraph(QWidget):
             ax2 = self.figure.add_subplot(212)
         elif acc_activated and not speed_activated and not temp_activated:
             ax2 = self.figure.add_subplot(111)
-        
+
         if speed_activated:
             ax1.plot(df.index, df['speed'].values * 1.852, label="Speed (km/h)", color='#D016F5')
-        
+
         if temp_activated:
             ax1.plot(df.index, df['temperature'], label="Temperature (ºC)", color='#F5680D')
-        
+
         if speed_activated or temp_activated:
             ax1.legend()
             ax1.set_xticks([])
@@ -86,7 +82,6 @@ class sessionTelemetryGraph(QWidget):
             # Adjust the Y-axis divisions and precision for temperature and speed plot
             ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
             ax1.yaxis.set_major_formatter('{x:.1f}')
-            
 
         # Plot the XYZ readings on the figure
         if acc_activated:
@@ -110,12 +105,12 @@ class sessionGPS_MapGraph(QWidget):
     def __init__(self, csv_file_name, individualLap=False, lapNumber=0):
         super().__init__()
         self.setWindowTitle('GPS Data')
-        self.window_width, self.window_height = 1600, 1200
+        self.window_width, self.window_height = 800, 800
         self.setMinimumSize(self.window_width, self.window_height)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
-        
+
         trail_coordinates = self.obtainGPScoordinates(csv_file_name, individualLap, lapNumber)
 
         coordinate = (trail_coordinates[0][0], trail_coordinates[0][1])
@@ -136,137 +131,135 @@ class sessionGPS_MapGraph(QWidget):
         webView = QWebEngineView()
         webView.setHtml(data.getvalue().decode())
         layout.addWidget(webView)
-    
-    
+
     def obtainGPScoordinates(self, csv_file_name, individualLap=False, lapNumber=0):
-        df = pd.read_csv(csv_file_name, names=['CurrentTime', 'satellites', 'speed', 'latitude', 'longitude', 'x', 'y', 'z', 'temperature', 'altitude', 'currentLap'])
+        df = pd.read_csv(csv_file_name,
+                         names=['CurrentTime', 'satellites', 'speed', 'latitude', 'longitude', 'x', 'y', 'z',
+                                'temperature', 'altitude', 'currentLap'])
         if individualLap:
             df = df.loc[df['currentLap'] == lapNumber]
-        
+
         coords = list(zip(df['latitude'], df['longitude']))
         return coords
 
 
 class lapComparationTelemetryGraph(QWidget):
-        def __init__(self, dfA, speed_activated, acc_activated, temp_activated, dfB=None):
-            super().__init__()
-            if dfB is None:
-                self.setWindowTitle("Lap A telemetry")
-                # Create a figure and a canvas to draw the plot on
-                self.figure = Figure()
-                self.canvas = FigureCanvas(self.figure)
+    def __init__(self, dfA, speed_activated, acc_activated, temp_activated, dfB=None):
+        super().__init__()
+        if dfB is None:
+            self.setWindowTitle("Lap A telemetry")
+            # Create a figure and a canvas to draw the plot on
+            self.figure = Figure()
+            self.canvas = FigureCanvas(self.figure)
 
-                if not acc_activated and (speed_activated or temp_activated):
-                    ax1 = self.figure.add_subplot(111)
-                elif acc_activated and (speed_activated or temp_activated):
-                    ax1 = self.figure.add_subplot(211)
-                    ax2 = self.figure.add_subplot(212)
-                elif acc_activated and not speed_activated and not temp_activated:
-                    ax2 = self.figure.add_subplot(111)
-                    
-                
-                if speed_activated:
-                    ax1.plot(dfA.index, dfA['speed'].values * 1.852, label="Speed (km/h)", color='#D016F5')
-                
-                if temp_activated:
-                    ax1.plot(dfA.index, dfA['temperature'], label="Temperature (ºC)", color='#F5680D')
-                
-                if speed_activated or temp_activated:
-                    ax1.legend()
-                    ax1.set_xticks([])
-                    ax1.set_xticklabels([])
+            if not acc_activated and (speed_activated or temp_activated):
+                ax1 = self.figure.add_subplot(111)
+            elif acc_activated and (speed_activated or temp_activated):
+                ax1 = self.figure.add_subplot(211)
+                ax2 = self.figure.add_subplot(212)
+            elif acc_activated and not speed_activated and not temp_activated:
+                ax2 = self.figure.add_subplot(111)
 
-                if speed_activated and temp_activated:
-                    # Adjust the Y-axis divisions and precision for temperature and speed plot
-                    ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
-                    ax1.yaxis.set_major_formatter('{x:.1f}')
-                
-                
-               # Plot the XYZ readings on the figure
-                if acc_activated:
-                    ax2.plot(dfA.index, dfA['x'], label='X', color='#F80606')
-                    ax2.plot(dfA.index, dfA['y'], label='Y', color='#1017F1')
-                    ax2.plot(dfA.index, dfA['z'], label='Z', color='#6BF50C')
-                    ax2.set_ylabel('Acceleration (m/s^2)')
-                    ax2.legend()
-                    ax2.set_xticks([])
-                    ax2.set_xticklabels([])
+            if speed_activated:
+                ax1.plot(dfA.index, dfA['speed'].values * 1.852, label="Speed (km/h)", color='#D016F5')
 
-                # Create a navigation toolbar and add it to the layout
-                toolbar = NavigationToolbar(self.canvas, self)
-                layout = QVBoxLayout()
-                layout.addWidget(toolbar)
-                layout.addWidget(self.canvas)
-                self.setLayout(layout)
+            if temp_activated:
+                ax1.plot(dfA.index, dfA['temperature'], label="Temperature (ºC)", color='#F5680D')
 
-                
-            else:
-                self.setWindowTitle("Lap A vs B telemetry analysis")
+            if speed_activated or temp_activated:
+                ax1.legend()
+                ax1.set_xticks([])
+                ax1.set_xticklabels([])
 
-                # Create a figure and a canvas to draw the plot on
-                self.figure = Figure()
-                self.canvas = FigureCanvas(self.figure)
+            if speed_activated and temp_activated:
+                # Adjust the Y-axis divisions and precision for temperature and speed plot
+                ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
+                ax1.yaxis.set_major_formatter('{x:.1f}')
 
-                
-                if not acc_activated and (speed_activated or temp_activated):
-                    ax1 = self.figure.add_subplot(111)
-                elif acc_activated and (speed_activated or temp_activated):
-                    ax1 = self.figure.add_subplot(211)
-                    ax2 = self.figure.add_subplot(212)
-                elif acc_activated and not speed_activated and not temp_activated:
-                    ax2 = self.figure.add_subplot(111)
-                
-                if speed_activated and temp_activated:
-                    # Combine the temperature and speed data from both dataframes
-                    temperatures = pd.concat([dfA['temperature'], dfB['temperature']], axis=0)
-                    speeds = pd.concat([dfA['speed'], dfB['speed']], axis=0)
+            # Plot the XYZ readings on the figure
+            if acc_activated:
+                ax2.plot(dfA.index, dfA['x'], label='X', color='#F80606')
+                ax2.plot(dfA.index, dfA['y'], label='Y', color='#1017F1')
+                ax2.plot(dfA.index, dfA['z'], label='Z', color='#6BF50C')
+                ax2.set_ylabel('Acceleration (m/s^2)')
+                ax2.legend()
+                ax2.set_xticks([])
+                ax2.set_xticklabels([])
 
-                if speed_activated or temp_activated:
-                    # Create a common x-axis range based on the length of the longest dataframe
-                    max_length = max(len(dfA), len(dfB))
-                    x_temps_speeds = np.arange(max_length)
-                    
-                if acc_activated:
-                    max_length = max(len(dfA), len(dfB))
-                    x_xyz = np.arange(max_length)
+            # Create a navigation toolbar and add it to the layout
+            toolbar = NavigationToolbar(self.canvas, self)
+            layout = QVBoxLayout()
+            layout.addWidget(toolbar)
+            layout.addWidget(self.canvas)
+            self.setLayout(layout)
 
-                if temp_activated:
-                    ax1.plot(x_temps_speeds[:len(dfA)], dfA['temperature'], label="A Air temperature", color='#F5680D')
-                    ax1.plot(x_temps_speeds[:len(dfB)], dfB['temperature'], label="B Air temperature", color='#F3BD99')
-                
-                if speed_activated:
-                    ax1.plot(x_temps_speeds[:len(dfA)], dfA['speed'].values * 1.852, label="A speed", color='#D016F5')
-                    ax1.plot(x_temps_speeds[:len(dfB)], dfB['speed'].values * 1.852, label="B speed", color='#EAB0F5')
 
-                if temp_activated or speed_activated:
-                    ax1.set_ylabel('Value')
-                    ax1.legend()
-                    ax1.set_xticks([])
-                    ax1.set_xticklabels([])
+        else:
+            self.setWindowTitle("Lap A vs B telemetry analysis")
 
-                    # Adjust the Y-axis divisions and precision for temperature and speed plot
-                    ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
-                    ax1.yaxis.set_major_formatter('{x:.1f}')
-                
-                if acc_activated:
-                    ax2.plot(x_xyz[:len(dfA)], dfA['x'], label='A X', color='#F80606')
-                    ax2.plot(x_xyz[:len(dfA)], dfA['y'], label='A Y', color='#1017F1')
-                    ax2.plot(x_xyz[:len(dfA)], dfA['z'], label='A Z', color='#6BF50C')
-                    ax2.plot(x_xyz[:len(dfB)], dfB['x'], label='B X', color='#FB9090')
-                    ax2.plot(x_xyz[:len(dfB)], dfB['y'], label='B Y', color='#9598F3')
-                    ax2.plot(x_xyz[:len(dfB)], dfB['z'], label='B Z', color='#C1F39E')
-                    ax2.set_ylabel('Acceleration (m/s^2)')
-                    ax2.legend()
-                    
-                    ax2.set_xticks([])
-                    ax2.set_xticklabels([])
+            # Create a figure and a canvas to draw the plot on
+            self.figure = Figure()
+            self.canvas = FigureCanvas(self.figure)
 
-                # Create a navigation toolbar and add it to the layout
-                toolbar = NavigationToolbar(self.canvas, self)
-                layout = QVBoxLayout()
-                layout.addWidget(toolbar)
-                layout.addWidget(self.canvas)
-                self.setLayout(layout)
+            if not acc_activated and (speed_activated or temp_activated):
+                ax1 = self.figure.add_subplot(111)
+            elif acc_activated and (speed_activated or temp_activated):
+                ax1 = self.figure.add_subplot(211)
+                ax2 = self.figure.add_subplot(212)
+            elif acc_activated and not speed_activated and not temp_activated:
+                ax2 = self.figure.add_subplot(111)
+
+            if speed_activated and temp_activated:
+                # Combine the temperature and speed data from both dataframes
+                temperatures = pd.concat([dfA['temperature'], dfB['temperature']], axis=0)
+                speeds = pd.concat([dfA['speed'], dfB['speed']], axis=0)
+
+            if speed_activated or temp_activated:
+                # Create a common x-axis range based on the length of the longest dataframe
+                max_length = max(len(dfA), len(dfB))
+                x_temps_speeds = np.arange(max_length)
+
+            if acc_activated:
+                max_length = max(len(dfA), len(dfB))
+                x_xyz = np.arange(max_length)
+
+            if temp_activated:
+                ax1.plot(x_temps_speeds[:len(dfA)], dfA['temperature'], label="A Air temperature", color='#F5680D')
+                ax1.plot(x_temps_speeds[:len(dfB)], dfB['temperature'], label="B Air temperature", color='#F3BD99')
+
+            if speed_activated:
+                ax1.plot(x_temps_speeds[:len(dfA)], dfA['speed'].values * 1.852, label="A speed", color='#D016F5')
+                ax1.plot(x_temps_speeds[:len(dfB)], dfB['speed'].values * 1.852, label="B speed", color='#EAB0F5')
+
+            if temp_activated or speed_activated:
+                ax1.set_ylabel('Value')
+                ax1.legend()
+                ax1.set_xticks([])
+                ax1.set_xticklabels([])
+
+                # Adjust the Y-axis divisions and precision for temperature and speed plot
+                ax1.yaxis.set_ticks(np.linspace(ax1.get_yticks()[0], ax1.get_yticks()[-1], 20))
+                ax1.yaxis.set_major_formatter('{x:.1f}')
+
+            if acc_activated:
+                ax2.plot(x_xyz[:len(dfA)], dfA['x'], label='A X', color='#F80606')
+                ax2.plot(x_xyz[:len(dfA)], dfA['y'], label='A Y', color='#1017F1')
+                ax2.plot(x_xyz[:len(dfA)], dfA['z'], label='A Z', color='#6BF50C')
+                ax2.plot(x_xyz[:len(dfB)], dfB['x'], label='B X', color='#FB9090')
+                ax2.plot(x_xyz[:len(dfB)], dfB['y'], label='B Y', color='#9598F3')
+                ax2.plot(x_xyz[:len(dfB)], dfB['z'], label='B Z', color='#C1F39E')
+                ax2.set_ylabel('Acceleration (m/s^2)')
+                ax2.legend()
+
+                ax2.set_xticks([])
+                ax2.set_xticklabels([])
+
+            # Create a navigation toolbar and add it to the layout
+            toolbar = NavigationToolbar(self.canvas, self)
+            layout = QVBoxLayout()
+            layout.addWidget(toolbar)
+            layout.addWidget(self.canvas)
+            self.setLayout(layout)
 
 
 class accelerometerGraph(QWidget):
@@ -287,7 +280,6 @@ class accelerometerGraph(QWidget):
         ax.set_xlabel('Time')
         ax.set_ylabel('Acceleration (m/s^2)')
         ax.legend()
-
 
         # Create a navigation toolbar and add it to the layout
         toolbar = NavigationToolbar(self.canvas, self)
@@ -343,7 +335,7 @@ class speedGraph(QWidget):
         layout.addWidget(toolbar)
         layout.addWidget(self.canvas)
         self.setLayout(layout)
-        
+
 
 class circuitElevationGraph(QWidget):
     def __init__(self, df):
@@ -382,7 +374,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setFixedSize(750, 800)
+        self.setFixedSize(550, 700)
         self.csv_file_name = None
         self.selected_lapA = 0
         self.selected_lapB = 0
@@ -393,12 +385,9 @@ class MainWindow(QMainWindow):
         self.lapComparationGraph_speed_selected = False
         self.lapComparationGraph_acc_selected = False
         self.lapComparationGraph_temp_selected = False
-        
-        
-        
+
         font_bold = QFont()
         font_bold.setBold(True)
-        
 
         # GUI
         self.setWindowTitle("UPV Eco-Marathon Telemetry App")
@@ -406,7 +395,7 @@ class MainWindow(QMainWindow):
         # logo
         self.logo_label = QLabel(self)
         pixmap = QPixmap('logo_equipo.png')
-        pixmap = pixmap.scaled(750, 800, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(550, 700, Qt.KeepAspectRatio)
         self.logo_label.setPixmap(pixmap)
         self.logo_label.setGeometry(0, 0, pixmap.width(), pixmap.height())
 
@@ -432,11 +421,10 @@ class MainWindow(QMainWindow):
         self.info_label_temp.setEnabled(False)
         self.info_label_elevation = QLabel('Elevation change: ')
         self.info_label_elevation.setEnabled(False)
-        
+
         self.drawCircuitButton = QPushButton("Circuit strategy sketch")
         self.drawCircuitButton.clicked.connect(self.show_CircuitSketch)
-        
-        
+
         # Session graphs
         self.session_graphs_labelTitle = QLabel('Session Graphs')
         self.session_graphs_labelTitle.setFont(font_bold)
@@ -455,7 +443,7 @@ class MainWindow(QMainWindow):
         self.plot_sesssionGraph_gpsData_button = QPushButton("GPS Data")
         self.plot_sesssionGraph_gpsData_button.clicked.connect(self.sessionGrap_gpsData_ShowPlot)
         self.plot_sesssionGraph_gpsData_button.setEnabled(False)
-        
+
         # Lap comparation Graphs
         self.lap_comparation_graphs_labelTitle = QLabel('Lap Comparation Graphs')
         self.lap_comparation_graphs_labelTitle.setFont(font_bold)
@@ -465,17 +453,17 @@ class MainWindow(QMainWindow):
         self.comboBox_A.addItems(["Lap 0"])
         self.comboBox_A.currentIndexChanged.connect(self.update_lapSelected_A)
         self.comboBox_A.setEnabled(False)
-        self.checkBox_LapComparation_speed =  QCheckBox(text="Speed", parent=self)
+        self.checkBox_LapComparation_speed = QCheckBox(text="Speed", parent=self)
         self.checkBox_LapComparation_speed.stateChanged.connect(self.checkBox_lapComparation_speed_changed)
         self.checkBox_LapComparation_speed.setEnabled(False)
-        self.checkBox_LapComparation_accelerometer =  QCheckBox(text="Acceleromter", parent=self)
-        self.checkBox_LapComparation_accelerometer.stateChanged.connect(self.checkBox_lapComparation_accelerometer_changed)
+        self.checkBox_LapComparation_accelerometer = QCheckBox(text="Acceleromter", parent=self)
+        self.checkBox_LapComparation_accelerometer.stateChanged.connect(
+            self.checkBox_lapComparation_accelerometer_changed)
         self.checkBox_LapComparation_accelerometer.setEnabled(False)
-        self.checkBox_LapComparation_temp =  QCheckBox(text="Air Temp", parent=self)
+        self.checkBox_LapComparation_temp = QCheckBox(text="Air Temp", parent=self)
         self.checkBox_LapComparation_temp.stateChanged.connect(self.checkBox_lapComparation_temp_changed)
         self.checkBox_LapComparation_temp.setEnabled(False)
 
-        
         self.checkBox_B_lap = QCheckBox(parent=self)
         self.checkBox_B_lap.stateChanged.connect(self.checkBox_bLap_changed)
         self.checkBox_B_lap.setEnabled(False)
@@ -485,7 +473,7 @@ class MainWindow(QMainWindow):
         self.comboBox_B.addItems(["Lap 0"])
         self.comboBox_B.currentIndexChanged.connect(self.update_lapSelected_B)
         self.comboBox_B.setEnabled(False)
-        
+
         self.plot_lapComparation_telemetry_button = QPushButton('Telemetry')
         self.plot_lapComparation_telemetry_button.setEnabled(False)
         self.plot_lapComparation_telemetry_button.clicked.connect(self.lapComparation_telemetry_ShowPlot)
@@ -495,7 +483,7 @@ class MainWindow(QMainWindow):
         self.plot_lapComparation_elevationMap_button = QPushButton('Elevation Map')
         self.plot_lapComparation_elevationMap_button.setEnabled(False)
         self.plot_lapComparation_elevationMap_button.clicked.connect(self.lapComparation_elevationMap_ShowPlot)
-        
+
         self.lapComparationA_labelTitle = QLabel('Lap A   ')
         self.lapComparationA_labelTitle.setFont(font_bold)
         self.lapComparationA_labelTitle.setEnabled(False)
@@ -506,19 +494,18 @@ class MainWindow(QMainWindow):
         self.lapComparationA_lapTime_labelTitle.setEnabled(False)
         self.lapComparationB_lapTime_labelTitle = QLabel('Laptime: ')
         self.lapComparationB_lapTime_labelTitle.setEnabled(False)
-        
+
         self.lapComparationA_avgSpeed_labelTitle = QLabel('Avg Speed: ')
         self.lapComparationA_avgSpeed_labelTitle.setEnabled(False)
         self.lapComparationB_avgSpeed_labelTitle = QLabel('Avg Speed: ')
-        self.lapComparationB_avgSpeed_labelTitle.setEnabled(False)       
+        self.lapComparationB_avgSpeed_labelTitle.setEnabled(False)
         self.lapComparationA_avgTemp_labelTitle = QLabel('Avg Air Temp: ')
         self.lapComparationA_avgTemp_labelTitle.setEnabled(False)
         self.lapComparationB_avgTemp_labelTitle = QLabel('Avg Air Temp: ')
         self.lapComparationB_avgTemp_labelTitle.setEnabled(False)
-        
 
         # layouts
-        #(right, top, left, bottom)
+        # (right, top, left, bottom)
         main_v_layout = QVBoxLayout()
         logo_h_layout = QHBoxLayout()
         csvTitle_h_layout = QHBoxLayout()
@@ -537,9 +524,8 @@ class MainWindow(QMainWindow):
         lapComparationData_h_row2_layout = QHBoxLayout()
         lapComparationData_h_row3_layout = QHBoxLayout()
         lapComparationData_h_row4_layout = QHBoxLayout()
-        
+
         main_v_layout.setAlignment(Qt.AlignTop)
-        
 
         main_v_layout.addLayout(logo_h_layout)
         main_v_layout.addLayout(csvTitle_h_layout)
@@ -550,89 +536,92 @@ class MainWindow(QMainWindow):
         main_v_layout.addLayout(sessionGraphs_main_h_layout)
         main_v_layout.addLayout(lapComparationGraphTitle_h_layout)
         main_v_layout.addLayout(lapComparationGraph_v_main_layout)
-        
+
         sessionInfoData_h_layout.addLayout(sessionInfoDataLeft_v_layout)
         sessionInfoData_h_layout.addLayout(sessionInfoDataRight_v_layout)
-        
+
         sessionGraphs_main_h_layout.addLayout(sessionGraphsLeft_v_layout)
         sessionGraphs_main_h_layout.addLayout(sessionGraphsRight_v_layout)
-        
+
         lapComparationGraph_v_main_layout.addLayout(lapComparationData_h_row1_layout)
         lapComparationGraph_v_main_layout.addLayout(lapComparationData_h_row2_layout)
         lapComparationGraph_v_main_layout.addLayout(lapComparationData_h_row3_layout)
         lapComparationGraph_v_main_layout.addLayout(lapComparationData_h_row4_layout)
-        
+
         # Widgets to layouts
         logo_h_layout.addWidget(self.logo_label)
-        
+
         csvTitle_h_layout.addWidget(self.open_csv_title)
-        csvTitle_h_layout.setContentsMargins(50, 10, 70, 1)
+        csvTitle_h_layout.setContentsMargins(30, 10, 20, 1)
 
         first_h_layout.addWidget(self.csv_file_name_label)
         first_h_layout.addWidget(self.csv_button)
-        first_h_layout.setContentsMargins(90, 1, 90, 1)
-        
+        first_h_layout.setContentsMargins(50, 1, 50, 1)
+
         sessionInfoTitle_h_layout.addWidget(self.session_info_labelTitle)
-        sessionInfoTitle_h_layout.setContentsMargins(50, 1, 50, 1)
-        
+        sessionInfoTitle_h_layout.setContentsMargins(30, 1, 30, 1)
+
         sessionInfoDataLeft_v_layout.addWidget(self.info_label_sessionTime)
         sessionInfoDataLeft_v_layout.addWidget(self.info_label_gpsSats)
         sessionInfoDataLeft_v_layout.addWidget(self.info_label_laps)
         sessionInfoDataLeft_v_layout.addWidget(self.info_label_speed)
         sessionInfoDataLeft_v_layout.addWidget(self.info_label_temp)
         sessionInfoDataLeft_v_layout.addWidget(self.info_label_elevation)
-        
+
         sessionInfoDataRight_v_layout.addWidget(self.drawCircuitButton)
         sessionInfoDataRight_v_layout.setContentsMargins(30, 10, 30, 1)
-        sessionInfoData_h_layout.setContentsMargins(100, 10, 110, 20)
-        
+        sessionInfoData_h_layout.setContentsMargins(70, 10, 50, 20)
+
         sessionGraphsTitle_h_layout.addWidget(self.session_graphs_labelTitle)
-        sessionGraphsTitle_h_layout.setContentsMargins(50, 1, 70, 1)
-        
+        sessionGraphsTitle_h_layout.setContentsMargins(30, 1, 50, 1)
+
         sessionGraphsLeft_v_layout.addWidget(self.checkBox_SessionGraphs_speed)
         sessionGraphsLeft_v_layout.addWidget(self.checkBox_SessionGraphs_accelerometer)
         sessionGraphsLeft_v_layout.addWidget(self.checkBox_SessionGraphs_temp)
-        
+
         sessionGraphsRight_v_layout.addWidget(self.plot_sesssionGraph_telemetry_button)
         sessionGraphsRight_v_layout.addWidget(self.plot_sesssionGraph_gpsData_button)
         sessionGraphsRight_v_layout.setContentsMargins(1, 1, 70, 1)
-        sessionGraphs_main_h_layout.setContentsMargins(180, 1, 150, 5)
-        
+        sessionGraphs_main_h_layout.setContentsMargins(50, 1, 10, 5)
+
         lapComparationGraphTitle_h_layout.addWidget(self.lap_comparation_graphs_labelTitle)
-        lapComparationGraphTitle_h_layout.setContentsMargins(50, 1, 50, 1)
-        
+        lapComparationGraphTitle_h_layout.setContentsMargins(30, 1, 30, 1)
+
         lapComparationData_h_row1_layout.addWidget(self.a_label)
         lapComparationData_h_row1_layout.addWidget(self.comboBox_A)
         lapComparationData_h_row1_layout.addWidget(self.checkBox_LapComparation_speed)
         lapComparationData_h_row1_layout.addWidget(self.checkBox_LapComparation_accelerometer)
         lapComparationData_h_row1_layout.addWidget(self.checkBox_LapComparation_temp)
-        #lapComparationData_h_row1_layout.setContentsMargins(40, 1, 1, 1)
-        
+
         lapComparationData_h_row2_layout.addWidget(self.checkBox_B_lap)
         lapComparationData_h_row2_layout.addWidget(self.b_label)
         lapComparationData_h_row2_layout.addWidget(self.comboBox_B)
         lapComparationData_h_row2_layout.addWidget(self.plot_lapComparation_telemetry_button)
         lapComparationData_h_row2_layout.addWidget(self.plot_lapComparation_gpsData_button)
         lapComparationData_h_row2_layout.addWidget(self.plot_lapComparation_elevationMap_button)
-        
+
         lapComparationData_h_row3_layout.addWidget(self.lapComparationA_labelTitle, stretch=0, alignment=Qt.AlignLeft)
-        lapComparationData_h_row3_layout.addWidget(self.lapComparationA_lapTime_labelTitle, stretch=1, alignment=Qt.AlignLeft)
-        lapComparationData_h_row3_layout.addWidget(self.lapComparationA_avgSpeed_labelTitle, stretch=1, alignment=Qt.AlignLeft)
-        lapComparationData_h_row3_layout.addWidget(self.lapComparationA_avgTemp_labelTitle, stretch=1, alignment=Qt.AlignLeft)
-        
+        lapComparationData_h_row3_layout.addWidget(self.lapComparationA_lapTime_labelTitle, stretch=1,
+                                                   alignment=Qt.AlignLeft)
+        lapComparationData_h_row3_layout.addWidget(self.lapComparationA_avgSpeed_labelTitle, stretch=1,
+                                                   alignment=Qt.AlignLeft)
+        lapComparationData_h_row3_layout.addWidget(self.lapComparationA_avgTemp_labelTitle, stretch=1,
+                                                   alignment=Qt.AlignLeft)
+
         lapComparationData_h_row4_layout.addWidget(self.lapComparationB_labelTitle, stretch=0, alignment=Qt.AlignLeft)
-        lapComparationData_h_row4_layout.addWidget(self.lapComparationB_lapTime_labelTitle, stretch=1, alignment=Qt.AlignLeft)
-        lapComparationData_h_row4_layout.addWidget(self.lapComparationB_avgSpeed_labelTitle, stretch=1, alignment=Qt.AlignLeft)
-        lapComparationData_h_row4_layout.addWidget(self.lapComparationB_avgTemp_labelTitle, stretch=1, alignment=Qt.AlignLeft)
-        
-        lapComparationGraph_v_main_layout.setContentsMargins(80, 1, 20, 10)
-        
+        lapComparationData_h_row4_layout.addWidget(self.lapComparationB_lapTime_labelTitle, stretch=1,
+                                                   alignment=Qt.AlignLeft)
+        lapComparationData_h_row4_layout.addWidget(self.lapComparationB_avgSpeed_labelTitle, stretch=1,
+                                                   alignment=Qt.AlignLeft)
+        lapComparationData_h_row4_layout.addWidget(self.lapComparationB_avgTemp_labelTitle, stretch=1,
+                                                   alignment=Qt.AlignLeft)
+
+        lapComparationGraph_v_main_layout.setContentsMargins(50, 1, 20, 10)
 
         # placeholder widget to hold the main layout.
         widget = QWidget()
         widget.setLayout(main_v_layout)
         self.setCentralWidget(widget)
-
 
     def open_csv_file(self):
         # Open a file dialog to choose a CSV file
@@ -649,67 +638,67 @@ class MainWindow(QMainWindow):
             if self.is_valid_csv_file(self.csv_file_name, 11):
                 self.csv_file_name_label.setText(self.csv_file_name)
                 self.csv_file_name_label.setFont(QFont('Arial', 7))
-                
+
                 # extract info from csv file
                 self.csv_info = self.extract_csv_info(self.csv_file_name, 11)
-                
+
                 # Read the CSV file and create a pandas DataFrame.
                 self.df = pd.read_csv(self.csv_file_name,
                                       names=['CurrentTime', 'satellites', 'speed', 'latitude', 'longitude', 'x', 'y',
                                              'z', 'temperature', 'altitude', 'currentLap'])
-                
+
                 # Convert the CurrentTime column to a datetime object
                 self.df['CurrentTime'] = pd.to_datetime(self.df['CurrentTime'], format='%H:%M:%S')
-                
+
                 # update info section
-                self.info_label_sessionTime.setText("Session time: "+self.csv_info["elapsed_time"])
+                self.info_label_sessionTime.setText("Session time: " + self.csv_info["elapsed_time"])
                 self.info_label_sessionTime.setEnabled(True)
-                
+
                 self.info_label_gpsSats.setText("Avg GPS Satellites: " + str(self.csv_info["avg_satellites"]))
                 self.info_label_gpsSats.setEnabled(True)
-                
+
                 self.info_label_laps.setText("Laps: " + str(self.csv_info["num_laps"]))
                 self.info_label_laps.setEnabled(True)
-                
+
                 self.info_label_speed.setText("Avg Speed: " + str(self.csv_info["avg_speed"]) + " km/h")
                 self.info_label_speed.setEnabled(True)
-                
+
                 self.info_label_temp.setText("Avg Air Temp: " + str(self.csv_info["avg_temperature"]) + " ºC")
                 self.info_label_temp.setEnabled(True)
-                
-                self.info_label_elevation.setText("Elevation change: " + str(self.csv_info["altitude_diff"]) + " meters")
+
+                self.info_label_elevation.setText(
+                    "Elevation change: " + str(self.csv_info["altitude_diff"]) + " meters")
                 self.info_label_elevation.setEnabled(True)
-                
+
                 # enable widgets
                 self.checkBox_SessionGraphs_speed.setEnabled(True)
                 self.checkBox_SessionGraphs_accelerometer.setEnabled(True)
                 self.checkBox_SessionGraphs_temp.setEnabled(True)
                 self.plot_sesssionGraph_telemetry_button.setEnabled(True)
                 self.plot_sesssionGraph_gpsData_button.setEnabled(True)
-                
+
                 self.a_label.setEnabled(True)
                 self.comboBox_A.setEnabled(True)
                 self.checkBox_LapComparation_speed.setEnabled(True)
                 self.checkBox_LapComparation_accelerometer.setEnabled(True)
                 self.checkBox_LapComparation_temp.setEnabled(True)
-                
+
                 self.checkBox_B_lap.setEnabled(True)
                 self.plot_lapComparation_telemetry_button.setEnabled(True)
                 self.plot_lapComparation_gpsData_button.setEnabled(True)
                 self.plot_lapComparation_elevationMap_button.setEnabled(True)
-                
+
                 self.lapComparationA_labelTitle.setEnabled(True)
                 self.lapComparationA_lapTime_labelTitle.setEnabled(True)
                 self.lapComparationA_avgSpeed_labelTitle.setEnabled(True)
                 self.lapComparationA_avgTemp_labelTitle.setEnabled(True)
-                
+
                 # populate both comboBoxes
                 self.populate_CB_laps(self.csv_info["num_laps"])
-                
-                
+
+
             else:
                 QMessageBox.warning(self, "Error", "Selected csv file is not valid!")
-
 
     def is_valid_csv_file(self, filename, num_columns):
         with open(filename, 'r') as f:
@@ -718,7 +707,6 @@ class MainWindow(QMainWindow):
                 if len(row) != num_columns:
                     return False
             return True
-
 
     def extract_csv_info(self, filename, num_columns):
         with open(filename, 'r') as f:
@@ -762,132 +750,133 @@ class MainWindow(QMainWindow):
                 'altitude_diff': altitude_diff
             }
 
-
     def populate_CB_laps(self, total_laps):
         self.comboBox_A.clear()
         self.comboBox_B.clear()
-        
+
         for i in range(total_laps + 1):
             self.comboBox_A.addItem('Lap {}'.format(i))
             self.comboBox_B.addItem('Lap {}'.format(i))
 
-
     def update_lapSelected_A(self, index):
         self.selected_lapA = index
-        
+
         if self.selected_lapA >= 0:
             currentLap_df = self.extract_csv_info_perLap(self.selected_lapA, self.df)
-            
+
             currentLap_avg_speed = round(currentLap_df['speed'].mean() * 1.852, 2)
-            currentLap_avg_temp= round(currentLap_df['temperature'].mean(), 2)
-            
+            currentLap_avg_temp = round(currentLap_df['temperature'].mean(), 2)
+
             lap_time = currentLap_df.iloc[-1]['CurrentTime'] - currentLap_df.iloc[0]['CurrentTime']
             lap_time_seconds = lap_time.total_seconds()
-            lap_time_str = '{:02d}:{:02d}:{:02d}'.format(int(lap_time_seconds // 3600), int(lap_time_seconds % 3600 // 60), int(lap_time_seconds % 60))
+            lap_time_str = '{:02d}:{:02d}:{:02d}'.format(int(lap_time_seconds // 3600),
+                                                         int(lap_time_seconds % 3600 // 60), int(lap_time_seconds % 60))
 
             self.lapComparationA_lapTime_labelTitle.setText("LapTime: " + lap_time_str)
             self.lapComparationA_avgSpeed_labelTitle.setText("Avg Speed: " + str(currentLap_avg_speed) + " km/h")
             self.lapComparationA_avgTemp_labelTitle.setText("Avg Air Temp: " + str(currentLap_avg_temp) + " ºC")
-        
-    
+
     def update_lapSelected_B(self, index):
         self.selected_lapB = index
-        
+
         if self.selected_lapB >= 0:
             currentLap_df = self.extract_csv_info_perLap(self.selected_lapB, self.df)
-            
+
             currentLap_avg_speed = round(currentLap_df['speed'].mean() * 1.852, 2)
-            currentLap_avg_temp= round(currentLap_df['temperature'].mean(), 2)
-            
+            currentLap_avg_temp = round(currentLap_df['temperature'].mean(), 2)
+
             lap_time = currentLap_df.iloc[-1]['CurrentTime'] - currentLap_df.iloc[0]['CurrentTime']
             lap_time_seconds = lap_time.total_seconds()
-            lap_time_str = '{:02d}:{:02d}:{:02d}'.format(int(lap_time_seconds // 3600), int(lap_time_seconds % 3600 // 60), int(lap_time_seconds % 60))
+            lap_time_str = '{:02d}:{:02d}:{:02d}'.format(int(lap_time_seconds // 3600),
+                                                         int(lap_time_seconds % 3600 // 60), int(lap_time_seconds % 60))
 
             self.lapComparationB_lapTime_labelTitle.setText("LapTime: " + lap_time_str)
             self.lapComparationB_avgSpeed_labelTitle.setText("Avg Speed: " + str(currentLap_avg_speed) + " km/h")
             self.lapComparationB_avgTemp_labelTitle.setText("Avg Air Temp: " + str(currentLap_avg_temp) + " ºC")
-    
-             
+
     def extract_csv_info_perLap(self, lap_selected, dataFrame):
         df_currentLap = dataFrame.loc[dataFrame['currentLap'] == lap_selected]
         return df_currentLap
-    
-    
-    
+
     # GUI listeners methods
     def checkBox_sessionGraph_speed_changed(self):
         if self.checkBox_SessionGraphs_speed.isChecked():
             self.sessionGraph_speed_selected = True
         else:
             self.sessionGraph_speed_selected = False
-    
+
     def checkBox_sessionGraph_accelerometer_changed(self):
         if self.checkBox_SessionGraphs_accelerometer.isChecked():
             self.sessionGraph_acc_selected = True
         else:
             self.sessionGraph_acc_selected = False
-            
+
     def checkBox_sessionGraph_temp_changed(self):
         if self.checkBox_SessionGraphs_temp.isChecked():
             self.sessionGraph_temp_selected = True
         else:
-            self.sessionGraph_temp_selected = False   
-    
+            self.sessionGraph_temp_selected = False
+
     def sessionGraph_telemetry_ShowPlot(self):
         if not self.sessionGraph_speed_selected and not self.sessionGraph_acc_selected and not self.sessionGraph_temp_selected:
             QMessageBox.warning(self, "Error", "Please, select at least one option.")
-        else:    
-            self.telemetry_GraphWindow = sessionTelemetryGraph(self.df, self.sessionGraph_speed_selected, self.sessionGraph_acc_selected, self.sessionGraph_temp_selected)
+        else:
+            self.telemetry_GraphWindow = sessionTelemetryGraph(self.df, self.sessionGraph_speed_selected,
+                                                               self.sessionGraph_acc_selected,
+                                                               self.sessionGraph_temp_selected)
             self.telemetry_GraphWindow.show()
-            
-    
+
     def sessionGrap_gpsData_ShowPlot(self):
         self.sessionGPSdata_GraphWindow = sessionGPS_MapGraph(self.csv_file_name)
         self.sessionGPSdata_GraphWindow.show()
-        
-    
+
     def checkBox_lapComparation_speed_changed(self):
         if self.checkBox_LapComparation_speed.isChecked():
             self.lapComparationGraph_speed_selected = True
         else:
             self.lapComparationGraph_speed_selected = False
-    
+
     def checkBox_lapComparation_accelerometer_changed(self):
         if self.checkBox_LapComparation_accelerometer.isChecked():
             self.lapComparationGraph_acc_selected = True
         else:
             self.lapComparationGraph_acc_selected = False
-            
+
     def checkBox_lapComparation_temp_changed(self):
         if self.checkBox_LapComparation_temp.isChecked():
             self.lapComparationGraph_temp_selected = True
         else:
-            self.lapComparationGraph_temp_selected = False  
-    
-    
+            self.lapComparationGraph_temp_selected = False
+
     def lapComparation_telemetry_ShowPlot(self):
         if not self.lapComparationGraph_speed_selected and not self.lapComparationGraph_acc_selected and not self.lapComparationGraph_temp_selected:
             QMessageBox.warning(self, "Error", "Please, select at least one option.")
         else:
             dfA = self.extract_csv_info_perLap(self.selected_lapA, self.df)
-            
+
             if self.lapB_selected:
                 dfB = self.extract_csv_info_perLap(self.selected_lapB, self.df)
-                self.lapComparationTelemetry_GraphWindow = lapComparationTelemetryGraph(dfA, self.lapComparationGraph_speed_selected, self.lapComparationGraph_acc_selected, self.lapComparationGraph_temp_selected, dfB)                
+                self.lapComparationTelemetry_GraphWindow = lapComparationTelemetryGraph(dfA,
+                                                                                        self.lapComparationGraph_speed_selected,
+                                                                                        self.lapComparationGraph_acc_selected,
+                                                                                        self.lapComparationGraph_temp_selected,
+                                                                                        dfB)
             else:
-                self.lapComparationTelemetry_GraphWindow = lapComparationTelemetryGraph(dfA, self.lapComparationGraph_speed_selected, self.lapComparationGraph_acc_selected, self.lapComparationGraph_temp_selected)
-            
+                self.lapComparationTelemetry_GraphWindow = lapComparationTelemetryGraph(dfA,
+                                                                                        self.lapComparationGraph_speed_selected,
+                                                                                        self.lapComparationGraph_acc_selected,
+                                                                                        self.lapComparationGraph_temp_selected)
+
             self.lapComparationTelemetry_GraphWindow.show()
-    
-    
+
     def lapComparation_gpsData_ShowPlot(self):
         self.lapComparationGPSdata_GraphWindow = sessionGPS_MapGraph(self.csv_file_name, True, self.selected_lapA)
         self.lapComparationGPSdata_GraphWindow.show()
-    
+
     def lapComparation_elevationMap_ShowPlot(self):
         self.elevationMap_GraphWindow = circuitElevationGraph(self.extract_csv_info_perLap(self.selected_lapA, self.df))
         self.elevationMap_GraphWindow.show()
-        
+
     def checkBox_bLap_changed(self):
         if self.checkBox_B_lap.isChecked():
             self.lapB_selected = True
@@ -905,16 +894,14 @@ class MainWindow(QMainWindow):
             self.lapComparationB_lapTime_labelTitle.setEnabled(False)
             self.lapComparationB_avgSpeed_labelTitle.setEnabled(False)
             self.lapComparationB_avgTemp_labelTitle.setEnabled(False)
-    
-    
+
     def show_CircuitSketch(self):
         self.circuitSketchWindow = drawCircuitWindow()
 
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    #app.setStyleSheet("QLabel{font-size: 11pt;} QPushButton{font-size: 10pt;} QComboBox{font-size: 10pt;}")
+    # app.setStyleSheet("QLabel{font-size: 11pt;} QPushButton{font-size: 10pt;} QComboBox{font-size: 10pt;}")
     app.setStyleSheet("QLabel{font-size: 9pt;} QPushButton{font-size: 9pt;} QComboBox{font-size: 9pt;}")
     w = MainWindow()
     w.show()
